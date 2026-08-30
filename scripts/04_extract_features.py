@@ -27,7 +27,7 @@ from exoego.paths import ensure_dirs, features_dir, manifests_dir, recordings_di
 
 
 def encode_video(encoder, video_path, segments, num_frames, batch_segments,
-                 scale=1.0, max_index=None):
+                 scale=1.0, max_index=None, degrade=False):
     """Encode every segment of one video in a single decode pass.
 
     Returns (segment_ids, features) with features shaped (n_segments, T, dim).
@@ -46,7 +46,8 @@ def encode_video(encoder, video_path, segments, num_frames, batch_segments,
     needed_sorted = sorted(needed)
 
     frames_by_index = {}
-    for index, frame in video_mod.iter_needed_frames(video_path, needed_sorted):
+    for index, frame in video_mod.iter_needed_frames(video_path, needed_sorted,
+                                                     degrade=degrade):
         frames_by_index[index] = frame
 
     if not frames_by_index:
@@ -105,6 +106,9 @@ def main() -> None:
                         choices=["ego", "exo"],
                         help="extract only these views (ego alone is enough for the gate)")
     parser.add_argument("--out-dir", default=None)
+    parser.add_argument("--degrade-exo", action="store_true",
+                        help="knock exo down to ego image quality (grayscale, 480 rows) "
+                             "before encoding; writes {role}_exodeg.npy")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -152,10 +156,12 @@ def main() -> None:
                 path = paths[view_role]
                 scale = video_mod.timeline_scale(counts[view_role], reference)
 
+                degrade = args.degrade_exo and view_role == "exo"
                 started = time.time()
                 ids, feats = encode_video(encoder, path, group, args.frames,
                                           args.batch_segments, scale=scale,
-                                          max_index=counts[view_role] - 1)
+                                          max_index=counts[view_role] - 1,
+                                          degrade=degrade)
                 collected[view_role][seq] = (ids, feats)
                 print(f"[{role} {position}/{len(sequences)}] {view_role} {seq[:38]}... "
                       f"{len(ids)} segs in {time.time() - started:.0f}s", flush=True)
@@ -169,6 +175,9 @@ def main() -> None:
             index_ids.extend(collected[primary][seq][0])
 
         for view_role in args.views:
+            suffix = view_role
+            if args.degrade_exo and view_role == "exo":
+                suffix = "exodeg"
             ordered = []
             for seq in shared:
                 ids, feats = collected[view_role][seq]
@@ -178,8 +187,8 @@ def main() -> None:
                 for segment_id in collected[primary][seq][0]:
                     ordered.append(lookup[segment_id])
             stacked = np.stack(ordered).astype(np.float32)
-            np.save(out_dir / f"{role}_{view_role}.npy", stacked)
-            print(f"  wrote {role}_{view_role}.npy {stacked.shape}")
+            np.save(out_dir / f"{role}_{suffix}.npy", stacked)
+            print(f"  wrote {role}_{suffix}.npy {stacked.shape}")
 
         index = segments.set_index("segment_id").loc[index_ids].reset_index()
         index.to_csv(out_dir / f"{role}_index.csv", index=False)

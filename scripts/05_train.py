@@ -48,8 +48,16 @@ def main() -> None:
     if not feature_dir.exists():
         raise SystemExit(f"no cached features at {feature_dir}; run 04_extract_features.py")
 
-    train_store = FeatureStore(feature_dir, "train")
-    eval_store = FeatureStore(feature_dir, "eval")
+    # One store per distinct exo array, shared across configs that use it.
+    stores = {}
+
+    def get_stores(exo_name):
+        if exo_name not in stores:
+            stores[exo_name] = (FeatureStore(feature_dir, "train", exo_name=exo_name),
+                                FeatureStore(feature_dir, "eval", exo_name=exo_name))
+        return stores[exo_name]
+
+    train_store, eval_store = get_stores("exo")
     print(f"train {len(train_store)} clips | eval {len(eval_store)} clips | "
           f"dim {train_store.dim} | T {train_store.num_frames} | device {device}")
 
@@ -60,6 +68,7 @@ def main() -> None:
     task_rows = []
     for config_name in args.configs:
         config = load_config(config_name)
+        train_store, eval_store = get_stores(config.get("exo_name", "exo"))
         budgets = args.budgets if args.budgets else config["budgets"]
         seeds = args.seeds if args.seeds else config["seeds"]
 

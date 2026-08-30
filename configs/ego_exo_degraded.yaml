@@ -1,0 +1,11 @@
+# Ablation: identical to ego_exo, but the exo stream is knocked down to ego's
+# image quality (grayscale, 480 rows, aspect preserved) BEFORE feature
+# extraction. Viewpoint is unchanged; only resolution and colour differ.
+#
+# Assembly101's ego is 636x480 mono and its exo is 1920x1080 RGB, so the plain
+# ego_exo arm varies viewpoint AND camera quality at once. This arm holds
+# quality fixed so the two can be told apart.
+name: ego_exo_degraded
+contrastive: exo
+lambda: 0.5
+exo_name: exodeg

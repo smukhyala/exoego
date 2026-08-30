@@ -14,6 +14,11 @@ from .annotations import FRAME_SCALE
 SHORT_SIDE = 256
 CROP = 224
 
+# Assembly101's egocentric cameras are 636x480 monochrome; the exocentric ones
+# are 1920x1080 RGB. EGO_ROWS is ego's vertical resolution, used to knock the exo
+# stream down to matching image quality for the ego_exo_degraded ablation.
+EGO_ROWS = 480
+
 
 def timeline_scale(view_frames: int, reference_frames: int) -> float:
     """Factor mapping the canonical annotation timeline onto one view's frames.
@@ -53,6 +58,32 @@ def sample_source_indices(start_frame: int, end_frame: int, num_frames: int,
     return source_idx
 
 
+def degrade_to_ego(frame_bgr: np.ndarray) -> np.ndarray:
+    """Reduce an exo frame to ego-grade image quality, preserving its viewpoint.
+
+    Drops resolution to ego's 480 rows and removes colour, leaving a 3-channel
+    BGR frame (ego videos already decode as three equal channels, so downstream
+    code is unchanged).
+
+    Aspect ratio is deliberately preserved rather than forced to ego's exact
+    636x480. `preprocess` normalises the SHORT side to 256 and centre-crops 224,
+    so the retained field of view depends on aspect ratio: 1920x1080 keeps 49.2%
+    of frame width, while a 636x480 squash would keep 66.1% -- a different slice
+    of the scene, plus anisotropic stretch. Preserving aspect keeps framing
+    byte-identical to the undegraded exo path, so resolution and colour are the
+    only variables that change.
+    """
+    height, width = frame_bgr.shape[:2]
+    if height <= EGO_ROWS:
+        small = frame_bgr
+    else:
+        new_width = int(round(width * EGO_ROWS / height))
+        small = cv2.resize(frame_bgr, (new_width, EGO_ROWS), interpolation=cv2.INTER_AREA)
+
+    gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
+    return cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+
+
 def frame_count(video_path) -> int:
     capture = cv2.VideoCapture(str(video_path))
     if not capture.isOpened():
@@ -79,11 +110,16 @@ def preprocess(frame_bgr: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
 
 
-def iter_needed_frames(video_path, needed_sorted):
+def iter_needed_frames(video_path, needed_sorted, degrade: bool = False):
     """Yield (source_index, preprocessed_frame) for each index in `needed_sorted`.
 
     `needed_sorted` must be sorted ascending. Indices past the end of the file
     are silently skipped; callers pad short segments.
+
+    `degrade` applies `degrade_to_ego` before `preprocess`, i.e. at the only
+    point where the native-resolution frame exists. Degrading here rather than
+    downstream is what makes it a true input-quality ablation: the backbone
+    genuinely never sees the high-resolution colour pixels.
     """
     capture = cv2.VideoCapture(str(video_path))
     if not capture.isOpened():
@@ -103,6 +139,8 @@ def iter_needed_frames(video_path, needed_sorted):
             if not ok:
                 break
             if position == target:
+                if degrade:
+                    frame = degrade_to_ego(frame)
                 processed = preprocess(frame)
                 while cursor < limit and needed_sorted[cursor] == target:
                     yield target, processed

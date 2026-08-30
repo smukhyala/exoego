@@ -10,11 +10,15 @@ from .annotations import verb_vocab
 class FeatureStore:
     """Frozen features for one role (train/eval), with ego and exo aligned by row."""
 
-    def __init__(self, feature_dir, role: str, vocab=None):
+    def __init__(self, feature_dir, role: str, vocab=None, exo_name: str = "exo"):
+        """`exo_name` selects which cached exo array backs the second view, so an
+        ablation can swap in a degraded exo stream without touching the training
+        code (see configs/ego_exo_degraded.yaml)."""
         self.role = role
+        self.exo_name = exo_name
         self.index = pd.read_csv(feature_dir / f"{role}_index.csv")
         self.ego = np.load(feature_dir / f"{role}_ego.npy")
-        self.exo = np.load(feature_dir / f"{role}_exo.npy")
+        self.exo = np.load(feature_dir / f"{role}_{exo_name}.npy")
 
         if self.ego.shape[0] != len(self.index) or self.exo.shape[0] != len(self.index):
             raise ValueError(
