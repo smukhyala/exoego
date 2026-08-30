@@ -3,3 +3,6 @@ third_party/
 __pycache__/
 *.pyc
 .DS_Store
+annotate/media/
+models/
+yolo11n.pt
