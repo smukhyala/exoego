@@ -114,6 +114,43 @@ through these parameters. It proves our camera conventions, units and frame inde
 are right. It does **not** independently prove the 3D sits on real hands in the pixels.
 That check is Stage 1.
 
+### Stage 0b — What each rig can achieve, before any model ✅ DONE
+
+`python -m src.rig_analysis`
+
+A noise-propagation study on the real calibration. It asks what 3D accuracy each
+rig can achieve *at best*, given realistic 2D detection error — an upper bound no
+detector or network can beat.
+
+Median 3D error in mm, by 2D detection noise:
+
+| condition | σ=0px | σ=1px | σ=2px | σ=4px |
+|---|---|---|---|---|
+| monocular ego, one global depth | 205.7 | 205.6 | **205.9** | 206.1 |
+| 4 headset ego cams (74–152 mm baseline) | 0.00 | 2.48 | 5.14 | 11.15 |
+| 8 static exo cams (589–1956 mm baseline) | 0.00 | 0.57 | **1.12** | 2.28 |
+| all 12 | 0.00 | 0.54 | 1.07 | 2.16 |
+
+**The monocular row is the whole argument.** It is flat. Going from 0 to 4 px of
+detection noise moves it by 0.4 mm, because its error is not detection error — it
+is scale ambiguity. *You cannot fix a monocular rig with a better hand detector.*
+
+Because "one global depth for 42 joints across two hands" is a deliberately crude
+baseline, we also swept the realistic monocular failure: relative pose oracle-perfect,
+only absolute root depth wrong.
+
+| root-depth error | 0% | 2% | 5% | 10% | 20% |
+|---|---|---|---|---|---|
+| median 3D error | 2.1 mm | 9.1 mm | 22.2 mm | **44.4 mm** | 88.9 mm |
+
+Hands sit a median **442 mm** from the ego camera, so error tracks depth error almost
+exactly. A monocular method at a realistic 10–20% depth error lands at 44–89 mm against
+exo's 1.1 mm. For an arm reaching for a bottle, 44 mm is a miss.
+
+> Note on distance: these ego cameras are ~134° FOV and the hands sit well off-axis,
+> so optical-axis depth (132 mm) is roughly 3× smaller than true euclidean distance
+> (442 mm). Report the latter.
+
 ### Stage 1 — Ego images and visual confirmation
 
 - Check the size of the `val` split before pulling anything. Val only. Not train (490K images).
