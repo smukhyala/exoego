@@ -5,12 +5,17 @@ verb (what is being done) and a noun (what is being handled).
 
 ## Run it
 
-    cd annotate && python3 -m http.server 8000
+    cd annotate && python3 serve.py
 
 Then open http://localhost:8000
 
-Use a local server rather than opening the file directly — some browsers block
-video loading over `file://`.
+**Do not use `python3 -m http.server`.** Its handler ignores the HTTP `Range`
+header and answers every request with 200 and the whole file, so a `<video>`
+element cannot seek — to reach t=300s the browser must first download all 65 MB.
+The symptom is that the first window plays and every window after it hangs. It is
+also HTTP/1.0 and single-threaded, so the two videos serialize behind one
+connection. `serve.py` fixes both: 206 Partial Content with a correct
+Content-Range, on a threading HTTP/1.1 server.
 
 ## Why this exists
 
