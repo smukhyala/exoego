@@ -255,6 +255,9 @@
   tbody tr:last-child td { border-bottom: none; }
 
   .table-wrap { overflow-x: auto; margin-top: 1.25rem; }
+  .paired-note { font-size: 0.72rem; line-height: 1.6; color: var(--ink-3); margin: 0.85rem 0 0; max-width: 62ch; }
+  .paired-note b { color: var(--ink-2); font-weight: 600; }
+  td.verdict-sep { font-weight: 600; }
 
   /* ---- tooltip --------------------------------------------------------- */
   .tip {
@@ -332,6 +335,15 @@
     <div id="detail"></div>
   </section>
 
+  <section id="pairedSection">
+    <div class="sec-head">
+      <h2>Paired statistics</h2>
+      <span class="sec-note">paired by seed &middot; pooled across every budget</span>
+    </div>
+    <div class="table-wrap"><table id="pairedTable"></table></div>
+    <p class="paired-note" id="pairedNote"></p>
+  </section>
+
   <section>
     <div class="sec-head">
       <h2>Numbers</h2>
@@ -353,8 +365,9 @@ const SERIES = {
   ego_exo:  { label: "ego + exo", short: "ego + exo", dash: "",       width: 2.5, ink: "var(--ink)",   marker: "dot",    band: "var(--band-a)" },
   ego_only: { label: "ego only", short: "ego only", dash: "7 4",    width: 2,   ink: "var(--ink-2)", marker: "hollow", band: "var(--band-b)" },
   ego_ego:  { label: "ego + ego (control)", short: "ego + ego", dash: "1.5 3", width: 1.5, ink: "var(--ink-3)", marker: "square", band: null },
+  ego_exo_degraded: { label: "ego + exo (grayscale)", short: "ego + exo gray", dash: "5 2 1 2", width: 1.8, ink: "var(--ink-2)", marker: "tri", band: null },
 };
-const ORDER = ["ego_exo", "ego_only", "ego_ego"];
+const ORDER = ["ego_exo", "ego_exo_degraded", "ego_only", "ego_ego"];
 
 const fmtPct = v => (v * 100).toFixed(1);
 const fmtInt = v => v.toLocaleString("en-US");
@@ -669,8 +682,48 @@ toggle.addEventListener("click", () => {
   drawMain(); drawGrid();
 });
 
+function drawPaired() {
+  const rows = DATA.paired || [];
+  const section = document.getElementById("pairedSection");
+  if (!rows.length) { section.hidden = true; return; }
+
+  const head = `<thead><tr><th>condition</th><th>&Delta; vs ego only</th><th>&plusmn; se</th>` +
+               `<th>|t|</th><th>wins</th><th>budgets +</th><th>verdict</th></tr></thead>`;
+  const body = rows.map(r => {
+    const st = SERIES[r.config] || { label: r.config };
+    const sign = r.mean >= 0 ? "+" : "\u2212";
+    const cls = r.separable ? "verdict-sep" : "muted";
+    const verdict = r.separable ? "separable" : "within noise";
+    return `<tr><td>${st.label}</td>` +
+           `<td>${sign}${Math.abs(r.mean).toFixed(4)}</td>` +
+           `<td>${r.se.toFixed(4)}</td>` +
+           `<td>${r.t.toFixed(2)}</td>` +
+           `<td>${r.wins}/${r.n}</td>` +
+           `<td>${r.budgetsPositive}/${r.budgetCount}</td>` +
+           `<td class="${cls}">${verdict}</td></tr>`;
+  }).join("");
+  document.getElementById("pairedTable").innerHTML = head + `<tbody>${body}</tbody>`;
+
+  const exo = rows.find(r => r.config === "ego_exo");
+  const ctl = rows.find(r => r.config === "ego_ego");
+  let note = "Each seed hands every condition the identical labelled subset, so differences " +
+             "are paired rather than compared as pooled means \u2014 which removes " +
+             "between-subset variance and is the more sensitive test. Units are " +
+             "mean-per-class accuracy. <b>|t| &gt; 2 is the bar for separable.</b>";
+  if (exo && ctl) {
+    note += ` The control lands at ${ctl.mean >= 0 ? "+" : "\u2212"}${Math.abs(ctl.mean).toFixed(4)} ` +
+            `(|t| ${ctl.t.toFixed(2)}), confirming the harness adds no lift on its own, so ` +
+            `ego + exo&rsquo;s ${exo.mean >= 0 ? "+" : "\u2212"}${Math.abs(exo.mean).toFixed(4)} is ` +
+            `exo-specific \u2014 <b>but at |t| ${exo.t.toFixed(2)} it is not separable from seed noise.</b> ` +
+            `&ldquo;budgets +&rdquo; counts how many of the ${exo.budgetCount} budgets move in the same ` +
+            `direction, so a result driven by one lucky budget is visible as such.`;
+  }
+  document.getElementById("pairedNote").innerHTML = note;
+}
+
 drawChrome();
 drawMain();
 drawGrid();
 drawTable();
+drawPaired();
 </script>

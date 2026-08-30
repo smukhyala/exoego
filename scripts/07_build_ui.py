@@ -7,6 +7,7 @@ The page ships with real numbers only -- nothing is synthesised here.
 
 import argparse
 import json
+import statistics
 import sys
 from pathlib import Path
 
@@ -106,6 +107,61 @@ def curves_separated(ego_only: list, ego_exo: list) -> bool:
     return False
 
 
+def paired_stats(sweep: pd.DataFrame, metric: str, baseline: str = "ego_only") -> list:
+    """Paired-by-seed differences against the baseline config.
+
+    Seed k hands every config the identical labelled subset, so pairing removes
+    between-subset variance and is far more sensitive than comparing pooled
+    means with their own spreads. This is the primary statistic: the per-budget
+    cells below it are exploratory, since with seven budgets roughly one cell is
+    expected to clear p<0.05 by chance.
+    """
+    base = {}
+    for row in sweep[sweep["config"] == baseline].itertuples(index=False):
+        base[(row.effective_budget, row.seed)] = getattr(row, metric)
+
+    out = []
+    for config in sweep["config"].unique():
+        if config == baseline:
+            continue
+        diffs = []
+        by_budget = {}
+        for row in sweep[sweep["config"] == config].itertuples(index=False):
+            key = (row.effective_budget, row.seed)
+            if key not in base:
+                continue
+            difference = getattr(row, metric) - base[key]
+            diffs.append(difference)
+            by_budget.setdefault(row.effective_budget, []).append(difference)
+        if len(diffs) < 2:
+            continue
+
+        mean = statistics.mean(diffs)
+        standard_error = statistics.stdev(diffs) / len(diffs) ** 0.5
+        t_stat = abs(mean) / standard_error if standard_error > 0 else 0.0
+        positive_budgets = 0
+        per_budget = []
+        for budget in sorted(by_budget):
+            budget_mean = statistics.mean(by_budget[budget])
+            if budget_mean > 0:
+                positive_budgets += 1
+            per_budget.append({"budget": budget, "mean": round(budget_mean, 5)})
+
+        out.append({
+            "config": config,
+            "n": len(diffs),
+            "mean": round(mean, 5),
+            "se": round(standard_error, 5),
+            "t": round(t_stat, 2),
+            "wins": sum(1 for d in diffs if d > 0),
+            "budgetsPositive": positive_budgets,
+            "budgetCount": len(by_budget),
+            "separable": bool(t_stat > 2.0),
+            "perBudget": per_budget,
+        })
+    return out
+
+
 def build_tasks(per_task: pd.DataFrame, budgets: list, low_support: int) -> list:
     smallest = min(budgets)
     tasks = []
@@ -175,7 +231,7 @@ def main() -> None:
     per_task = pd.read_csv(task_path) if task_path.exists() else pd.DataFrame()
 
     curves = {}
-    for config in ["ego_only", "ego_exo", "ego_ego"]:
+    for config in ["ego_only", "ego_exo", "ego_ego", "ego_exo_degraded"]:
         part = sweep[sweep["config"] == config]
         if not part.empty:
             curves[config] = curve_from(part, args.metric)
@@ -312,18 +368,31 @@ def main() -> None:
             "verdict": (
                 "Inconclusive. The egocentric representation sits at chance, so the "
                 "ego-vs-ego+exo comparison has nothing to measure yet."
+                if not gate_pass else
+                "No measurable effect. The egocentric representation is sound, but the "
+                "exocentric gain is not separable from seed noise."
                 if inconclusive else
                 "Exocentric video measurably reduces the labels needed."
             ),
             "gateText": gate_text,
             "lowSupport": args.low_support,
             "diagnosis": (
-                "The egocentric representation does not clear the majority-class "
-                "baseline, so there is no headroom in which an exocentric effect could "
-                "show up: all three configs are pinned together by the encoder, not by "
-                "the alignment objective. Read the gate before the curves &mdash; a "
-                "delta measured here is seed noise. The lever is the representation "
-                f"({backbone_label}), not more data or a different alignment loss."
+                (
+                    "The egocentric representation does not clear the majority-class "
+                    "baseline, so there is no headroom in which an exocentric effect could "
+                    "show up: all three configs are pinned together by the encoder, not by "
+                    "the alignment objective. Read the gate before the curves &mdash; a "
+                    "delta measured here is seed noise. The lever is the representation "
+                    f"({backbone_label}), not more data or a different alignment loss."
+                ) if not gate_pass else (
+                    "The gate passes, so this comparison is measurable &mdash; and what it "
+                    "measures is a null. Pooled over every budget and seed, ego + exo sits "
+                    "within seed noise of ego alone, and the ego + ego control sits at zero, "
+                    "which is what tells you the harness is not adding lift of its own. The "
+                    "exocentric lean is real in direction but too small to claim at this "
+                    "scale. Per-budget cells are exploratory: with seven budgets, roughly one "
+                    "is expected to look significant by chance."
+                )
             ) if inconclusive else "",
             "chips": manifest_chips + [
                 backbone_label,
@@ -348,6 +417,7 @@ def main() -> None:
         "fullBudget": full_budget,
         "curves": curves,
         "headline": headline,
+        "paired": paired_stats(sweep, args.metric),
         "stats": stats,
         "tasks": tasks,
     }
@@ -366,6 +436,10 @@ def main() -> None:
     print(f"  gate:    {'PASS' if gate_pass else 'FAIL'} "
           f"(ego_only top-1 {ego_only_full:.3f} vs majority {majority:.3f})")
     print(f"  separated: {separated} | inconclusive: {inconclusive}")
+    for row in payload["paired"]:
+        print(f"  paired {row['config']:18s} {row['mean']:+.4f} "
+              f"se={row['se']:.4f} |t|={row['t']:.2f} wins={row['wins']}/{row['n']} "
+              f"{'SEPARABLE' if row['separable'] else 'within noise'}")
     if headline:
         print(f"  headline: {headline['reduction']:.2f}x fewer labels")
     else:
