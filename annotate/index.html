@@ -132,6 +132,11 @@ kbd{font:500 11px/1 "IBM Plex Mono",monospace;background:var(--sunk);
 
 <script>
 const WINDOW = 5.0;              // seconds per labelling window
+// The media is encoded with a forced keyframe at each window boundary, but at
+// 29.97 fps those land at 5.005 / 5.038 s rather than exactly 5.000. Seeking to
+// the exact boundary would snap back to the PREVIOUS keyframe and decode five
+// seconds forward, which is the stall this epsilon exists to avoid.
+const SEEK_EPS = 0.08;
 const DURATION = 898.8;          // synchronized overlap
 const N = Math.floor(DURATION / WINDOW);
 const KEY = 'exoego-annot-v1';
@@ -181,14 +186,32 @@ function markUnclear(){
 }
 
 function seek(){
-  const t = i * WINDOW;
-  [exo, ego].forEach(v => { try { v.currentTime = t; v.play().catch(()=>{}); } catch(e){} });
+  const t = i * WINDOW + SEEK_EPS;
+  [exo, ego].forEach(v => {
+    try {
+      v.currentTime = t;
+      const p = v.play();
+      if (p && p.catch) p.catch(()=>{});
+    } catch(e){}
+  });
 }
-function loopCheck(){
-  const t = i * WINDOW;
-  [exo, ego].forEach(v => { if (v.currentTime > t + WINDOW || v.currentTime < t - 0.4) v.currentTime = t; });
+
+// Loop the current window. The media is encoded with a keyframe at every window
+// boundary, so these seeks land exactly and cheaply; without that the browser
+// has to decode from the previous keyframe and playback stalls.
+function clampLoop(v){
+  const t0 = i * WINDOW + SEEK_EPS, t1 = (i + 1) * WINDOW;
+  if (v.currentTime >= t1 - 0.03 || v.currentTime < t0 - 0.3){
+    try { v.currentTime = t0; } catch(e){ return; }
+  }
+  if (v.paused){ const p = v.play(); if (p && p.catch) p.catch(()=>{}); }
 }
-setInterval(loopCheck, 200);
+[exo, ego].forEach(v => {
+  v.addEventListener('timeupdate', () => clampLoop(v));
+  v.addEventListener('ended', () => clampLoop(v));
+  v.addEventListener('pause', () => { if (!document.hidden) clampLoop(v); });
+});
+setInterval(() => [exo, ego].forEach(clampLoop), 500);   // backstop
 
 function go(n){ i = Math.max(0, Math.min(N-1, n)); seek(); render(); }
 
@@ -252,8 +275,14 @@ document.getElementById('export').onclick = () => {
   a.click();
 };
 
+// Init once both are decodable. Guard the case where a video is ALREADY loaded
+// before the listener attaches, which otherwise leaves the tool stuck at t=0.
 let ready = 0;
-[exo, ego].forEach(v => v.addEventListener('loadeddata', () => { if (++ready === 2) go(0); }));
+function armed(){ if (++ready === 2) go(0); }
+[exo, ego].forEach(v => {
+  if (v.readyState >= 2) armed();
+  else v.addEventListener('loadeddata', armed, { once: true });
+});
 render();
 </script>
 </body>
