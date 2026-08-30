@@ -1,0 +1,290 @@
+<title>Where Exo Wins</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#fcfcfb; --surface:#ffffff; --sunk:#f0efec;
+  --ink:#0b0b0b; --ink2:#52514e; --muted:#7c7a75; --rule:#e2e0da;
+  --ego:#2a78d6; --exo:#eb6834; --grid:#e8e6e0;
+  --warn-bg:#fdf4e3; --warn-line:#dfa63a; --warn-ink:#8a5602;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#131312; --surface:#1a1a19; --sunk:#232322;
+  --ink:#ffffff; --ink2:#c3c2b7; --muted:#918f86; --rule:#33322f;
+  --ego:#3987e5; --exo:#d95926; --grid:#2b2b28;
+  --warn-bg:#2a1f0c; --warn-line:#6b4f18; --warn-ink:#e8ad4a;
+}}
+:root[data-theme="dark"]{
+  --paper:#131312; --surface:#1a1a19; --sunk:#232322;
+  --ink:#ffffff; --ink2:#c3c2b7; --muted:#918f86; --rule:#33322f;
+  --ego:#3987e5; --exo:#d95926; --grid:#2b2b28;
+  --warn-bg:#2a1f0c; --warn-line:#6b4f18; --warn-ink:#e8ad4a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:15px/1.55 "IBM Plex Sans",-apple-system,BlinkMacSystemFont,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px 80px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:"Barlow Condensed","IBM Plex Sans",sans-serif;text-wrap:balance}
+header{padding:48px 0 24px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;
+  letter-spacing:.16em;font-size:12.5px;font-weight:600;color:var(--exo)}
+h1{font-size:clamp(38px,6.5vw,58px);line-height:.94;margin:10px 0 0;font-weight:700}
+.lede{margin:18px 0 0;max-width:64ch;font-size:17px;color:var(--ink2)}
+.lede b{color:var(--ink);font-weight:600}
+figure{margin:38px 0 0;background:var(--surface);border:1px solid var(--rule);
+  border-radius:9px;padding:20px 22px 16px}
+figcaption{margin:0 0 4px}
+figcaption .n{font-family:"Barlow Condensed",sans-serif;font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:600}
+figcaption h2{font-size:23px;margin:3px 0 5px;font-weight:700;letter-spacing:-.005em}
+figcaption p{margin:0 0 14px;font-size:14px;color:var(--ink2);max-width:62ch}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.axis{stroke:var(--rule);stroke-width:1}
+.grid{stroke:var(--grid);stroke-width:1}
+.tick{fill:var(--muted);font-size:11.5px;font-family:"IBM Plex Mono",monospace}
+.vlab{fill:var(--ink);font-size:12.5px;font-weight:600;font-family:"IBM Plex Mono",monospace}
+.glab{fill:var(--ink2);font-size:12.5px;font-weight:500}
+.legend{display:flex;gap:18px;margin:2px 0 12px;font-size:13px;color:var(--ink2);flex-wrap:wrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;
+  vertical-align:-1px}
+.note{margin:14px 0 0;padding:11px 14px;border-radius:0 6px 6px 0;font-size:13.5px;
+  background:var(--warn-bg);border-left:4px solid var(--warn-line);color:var(--ink2)}
+.note b{color:var(--warn-ink)}
+.src{margin:10px 0 0;font-size:12px;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:12px 0 0}
+th,td{text-align:right;padding:6px 9px;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+td.mono{font-variant-numeric:tabular-nums}
+details{margin:12px 0 0}
+summary{cursor:pointer;font-size:12.5px;color:var(--muted)}
+.bar{transition:opacity .12s}
+.bar:hover{opacity:.75}
+#tip{position:fixed;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--ink);color:var(--paper);padding:7px 10px;border-radius:6px;
+  font-size:12.5px;font-family:"IBM Plex Mono",monospace;z-index:9;white-space:nowrap}
+footer{margin:44px 0 0;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">ExoEgo · World Context × Assembly101</div>
+  <h1>Where Exo Wins</h1>
+  <p class="lede">An exocentric camera is better than a head-mounted one for reading
+  what task is happening — <b>but only if it is close enough to see hands.</b> Move it
+  to the ceiling and the advantage reverses. Exo's value is a property of framing,
+  not of being exocentric.</p>
+</header>
+
+<figure>
+  <figcaption>
+    <div class="n">Figure 1</div>
+    <h2>The advantage flips sign with camera placement</h2>
+    <p>Exo's advantage over ego at reading the task, measured on two datasets with
+    different exo camera placements. Above zero, the exocentric view is better.</p>
+  </figcaption>
+  <svg id="f1" viewBox="0 0 780 250" role="img" aria-label="Exo advantage over ego: +37% for workbench-mounted exo, -36% for ceiling-mounted exo"></svg>
+  <div class="note"><b>Different metrics, made comparable.</b> Assembly101 is top-1
+  action accuracy (exo→exo 0.160 vs ego→ego 0.117); World Context is verb label
+  entropy (exo 1.98 vs ego 3.07 bits). Each bar is exo's <em>relative</em> difference
+  from ego <em>within its own dataset and metric</em> — the two bars are never
+  compared on a shared absolute scale.</div>
+  <details><summary>Show data</summary>
+  <table><thead><tr><th>Exo placement</th><th>Dataset</th><th>ego</th><th>exo</th><th>advantage</th></tr></thead>
+  <tbody>
+    <tr><td>Workbench, 0.6–2 m</td><td>Assembly101</td><td class="mono">0.117</td><td class="mono">0.160</td><td class="mono">+37%</td></tr>
+    <tr><td>Ceiling, whole bay</td><td>World Context</td><td class="mono">3.07 bits</td><td class="mono">1.98 bits</td><td class="mono">−36%</td></tr>
+  </tbody></table></details>
+</figure>
+
+<figure>
+  <figcaption>
+    <div class="n">Figure 2</div>
+    <h2>Crowding does not rescue the ceiling camera</h2>
+    <p>Task information carried by each view, split by how many workers are in the
+    exo frame. If covering more workers compensated for the distance, the orange
+    bars would rise. They fall.</p>
+  </figcaption>
+  <div class="legend">
+    <span><i style="background:var(--ego)"></i>Ego — head-worn</span>
+    <span><i style="background:var(--exo)"></i>Exo — ceiling</span>
+  </div>
+  <svg id="f2" viewBox="0 0 780 290" role="img" aria-label="Verb label entropy by view across worker counts; ego is higher than exo at every level"></svg>
+  <div class="note"><b>The coverage argument is not supported here.</b> One exo
+  camera held a mean of 1.13 workers in frame at a 0.25 detector threshold — a
+  1.13× multiplier, not the 5–8 the footage looks like. Overhead people are out of
+  distribution for a COCO detector, so worker coverage could not be measured
+  reliably and is <em>not</em> claimed.</div>
+  <details><summary>Show data</summary>
+  <table><thead><tr><th>Workers in exo frame</th><th>Windows</th><th>Ego bits</th><th>Exo bits</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td class="mono">69</td><td class="mono">2.91</td><td class="mono">2.30</td></tr>
+    <tr><td>2</td><td class="mono">29</td><td class="mono">2.56</td><td class="mono">1.86</td></tr>
+    <tr><td>3</td><td class="mono">13</td><td class="mono">2.72</td><td class="mono">1.99</td></tr>
+    <tr><td>4+</td><td class="mono">8</td><td class="mono">2.25</td><td class="mono">1.55</td></tr>
+  </tbody></table></details>
+</figure>
+
+<figure>
+  <figcaption>
+    <div class="n">Figure 3</div>
+    <h2>Why the ceiling camera loses: it cannot see hands</h2>
+    <p>Windows labelled with a fine manipulation verb — pick up, insert, detach,
+    screw — out of 179. From the ceiling these actions are simply not resolvable,
+    so the model falls back to a generic reading on 58% of windows.</p>
+  </figcaption>
+  <svg id="f3" viewBox="0 0 780 150" role="img" aria-label="Fine manipulation verbs: ego 68 windows, exo 8 windows"></svg>
+  <p class="src">Same 179 five-second windows, each labelled independently from each
+  view by <span class="mono">gemini-3.7-flash</span>, never seeing both at once.</p>
+</figure>
+
+<footer>
+  <p><b>What this figure does and does not claim.</b> It claims that exo's advantage
+  at task reading depends on camera framing, and that a ceiling camera over a whole
+  bay loses that advantage because it cannot resolve hands. It does <em>not</em>
+  claim a worker-coverage multiplier — that could not be measured reliably with an
+  off-the-shelf detector on overhead views.</p>
+  <p>Assembly101 figures: segment-level linear probe, 8 seeds, N=143 labelled
+  sequences. World Context figures: 179 synchronized windows from a paired GoPro
+  ego/exo recording, aligned at +11.16 s by onset cross-correlation. Both World
+  Context cameras are the same model at 1920×1080 colour, so resolution and colour
+  are controlled and what differs is viewpoint.</p>
+</footer>
+</div>
+<div id="tip" role="status"></div>
+
+<script>
+const tip = document.getElementById('tip');
+function hook(el, text){
+  el.addEventListener('mousemove', e => {
+    tip.textContent = text;
+    tip.style.opacity = 1;
+    tip.style.left = Math.min(e.clientX + 14, innerWidth - 220) + 'px';
+    tip.style.top = (e.clientY - 34) + 'px';
+  });
+  el.addEventListener('mouseleave', () => { tip.style.opacity = 0; });
+}
+const NS = 'http://www.w3.org/2000/svg';
+function el(n, a){ const x = document.createElementNS(NS, n);
+  for (const k in a) x.setAttribute(k, a[k]); return x; }
+
+/* ---------- Figure 1 : diverging advantage ---------- */
+(function(){
+  const svg = document.getElementById('f1');
+  const W = 780, H = 250, L = 220, R = 40, T = 22, B = 42;
+  const data = [
+    {k:'Workbench exo · 0.6–2 m', d:'Assembly101',   v: 0.37,  detail:'exo 0.160 vs ego 0.117 top-1'},
+    {k:'Ceiling exo · whole bay', d:'World Context', v: -0.36, detail:'exo 1.98 vs ego 3.07 bits'},
+  ];
+  const max = 0.45;
+  const x = v => L + ((v + max) / (2*max)) * (W - L - R);
+  const zero = x(0);
+  const bh = 46, gap = 34;
+
+  for (let t = -0.4; t <= 0.4001; t += 0.2){
+    const px = x(t);
+    svg.appendChild(el('line', {x1:px, y1:T, x2:px, y2:H-B, class:'grid'}));
+    const tk = el('text', {x:px, y:H-B+18, class:'tick', 'text-anchor':'middle'});
+    tk.textContent = (t>0?'+':'') + Math.round(t*100) + '%';
+    svg.appendChild(tk);
+  }
+  data.forEach((d, i) => {
+    const y = T + 12 + i*(bh+gap);
+    const w = Math.abs(x(d.v) - zero);
+    const bx = d.v >= 0 ? zero : zero - w;
+    const r = el('rect', {x:bx, y, width:w, height:bh, rx:4,
+      fill:'var(--exo)', class:'bar'});
+    hook(r, `${d.d}: ${(d.v*100).toFixed(0)}%  (${d.detail})`);
+    svg.appendChild(r);
+
+    const lab = el('text', {x:L-14, y:y+bh/2+1, class:'glab', 'text-anchor':'end'});
+    lab.textContent = d.k; svg.appendChild(lab);
+    const sub = el('text', {x:L-14, y:y+bh/2+16, class:'tick', 'text-anchor':'end'});
+    sub.textContent = d.d; svg.appendChild(sub);
+
+    const v = el('text', {x: d.v>=0 ? bx+w+9 : bx-9, y:y+bh/2+5, class:'vlab',
+      'text-anchor': d.v>=0 ? 'start' : 'end'});
+    v.textContent = (d.v>0?'+':'') + Math.round(d.v*100) + '%';
+    svg.appendChild(v);
+  });
+  svg.appendChild(el('line', {x1:zero, y1:T-6, x2:zero, y2:H-B+4,
+    stroke:'var(--ink)', 'stroke-width':1.5}));
+  const z = el('text', {x:zero, y:T-11, class:'tick', 'text-anchor':'middle'});
+  z.textContent = 'exo = ego'; svg.appendChild(z);
+})();
+
+/* ---------- Figure 2 : grouped bars ---------- */
+(function(){
+  const svg = document.getElementById('f2');
+  const W = 780, H = 290, L = 54, R = 22, T = 16, B = 56;
+  const groups = [
+    {k:'1 worker',  n:69, ego:2.91, exo:2.30},
+    {k:'2 workers', n:29, ego:2.56, exo:1.86},
+    {k:'3 workers', n:13, ego:2.72, exo:1.99},
+    {k:'4+ workers',n: 8, ego:2.25, exo:1.55},
+  ];
+  const max = 3.2;
+  const y = v => H - B - (v/max)*(H - B - T);
+  for (let t = 0; t <= 3.0001; t += 1){
+    const py = y(t);
+    svg.appendChild(el('line', {x1:L, y1:py, x2:W-R, y2:py, class:'grid'}));
+    const tk = el('text', {x:L-10, y:py+4, class:'tick', 'text-anchor':'end'});
+    tk.textContent = t.toFixed(0); svg.appendChild(tk);
+  }
+  const gw = (W - L - R) / groups.length;
+  const bw = 44, inner = 2;      // 2px surface gap between adjacent bars
+  groups.forEach((g, i) => {
+    const cx = L + gw*i + gw/2;
+    [['ego','var(--ego)','Ego'], ['exo','var(--exo)','Exo']].forEach((s, j) => {
+      const bx = cx - bw - inner/2 + j*(bw+inner);
+      const v = g[s[0]];
+      const r = el('rect', {x:bx, y:y(v), width:bw, height:(H-B)-y(v), rx:4,
+        fill:s[1], class:'bar'});
+      hook(r, `${s[2]} · ${g.k}: ${v.toFixed(2)} bits (n=${g.n})`);
+      svg.appendChild(r);
+      const t = el('text', {x:bx+bw/2, y:y(v)-7, class:'vlab', 'text-anchor':'middle'});
+      t.textContent = v.toFixed(2); svg.appendChild(t);
+    });
+    const lab = el('text', {x:cx, y:H-B+20, class:'glab', 'text-anchor':'middle'});
+    lab.textContent = g.k; svg.appendChild(lab);
+    const nn = el('text', {x:cx, y:H-B+36, class:'tick', 'text-anchor':'middle'});
+    nn.textContent = `n=${g.n}`; svg.appendChild(nn);
+  });
+  svg.appendChild(el('line', {x1:L, y1:H-B, x2:W-R, y2:H-B, class:'axis'}));
+  const ax = el('text', {x:L-10, y:T+2, class:'tick', 'text-anchor':'end'});
+  ax.textContent = 'bits'; svg.appendChild(ax);
+})();
+
+/* ---------- Figure 3 : fine verbs ---------- */
+(function(){
+  const svg = document.getElementById('f3');
+  const W = 780, H = 150, L = 150, R = 60, T = 14, B = 34;
+  const data = [{k:'Ego — head-worn', v:68, c:'var(--ego)'},
+                {k:'Exo — ceiling',   v:8,  c:'var(--exo)'}];
+  const max = 80;
+  const x = v => L + (v/max)*(W - L - R);
+  for (let t = 0; t <= 80.001; t += 20){
+    const px = x(t);
+    svg.appendChild(el('line', {x1:px, y1:T, x2:px, y2:H-B, class:'grid'}));
+    const tk = el('text', {x:px, y:H-B+18, class:'tick', 'text-anchor':'middle'});
+    tk.textContent = t; svg.appendChild(tk);
+  }
+  const bh = 36, gap = 16;
+  data.forEach((d, i) => {
+    const y = T + i*(bh+gap);
+    const r = el('rect', {x:L, y, width:x(d.v)-L, height:bh, rx:4, fill:d.c, class:'bar'});
+    hook(r, `${d.k}: ${d.v} of 179 windows (${(d.v/179*100).toFixed(0)}%)`);
+    svg.appendChild(r);
+    const lab = el('text', {x:L-14, y:y+bh/2+5, class:'glab', 'text-anchor':'end'});
+    lab.textContent = d.k; svg.appendChild(lab);
+    const v = el('text', {x:x(d.v)+9, y:y+bh/2+5, class:'vlab'});
+    v.textContent = d.v; svg.appendChild(v);
+  });
+  svg.appendChild(el('line', {x1:L, y1:H-B, x2:W-R, y2:H-B, class:'axis'}));
+  const cap = el('text', {x:L, y:H-B+34, class:'tick'});
+  cap.textContent = 'windows out of 179 labelled with a fine manipulation verb';
+  svg.appendChild(cap);
+})();
+</script>

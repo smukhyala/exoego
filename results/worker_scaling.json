@@ -1,0 +1,45 @@
+{
+  "n_windows": 179,
+  "conf": 0.25,
+  "exo_people_mean": 1.1284916201117319,
+  "exo_people_hist": {
+    "0": 60,
+    "1": 69,
+    "2": 29,
+    "3": 13,
+    "4": 6,
+    "5": 1,
+    "7": 1
+  },
+  "coverage_multiplier": 1.1284916201117319,
+  "bins": [
+    {
+      "workers": "1",
+      "n": 69,
+      "exo_entropy": 2.3019079511153664,
+      "ego_entropy": 2.910637533628809,
+      "verb_agreement": 0.2608695652173913
+    },
+    {
+      "workers": "2",
+      "n": 29,
+      "exo_entropy": 1.858096743210927,
+      "ego_entropy": 2.556979065706863,
+      "verb_agreement": 0.3448275862068966
+    },
+    {
+      "workers": "3",
+      "n": 13,
+      "exo_entropy": 1.9877733714879842,
+      "ego_entropy": 2.7192945256669794,
+      "verb_agreement": 0.07692307692307693
+    },
+    {
+      "workers": "4+",
+      "n": 8,
+      "exo_entropy": 1.5487949406953985,
+      "ego_entropy": 2.25,
+      "verb_agreement": 0.375
+    }
+  ]
+}
