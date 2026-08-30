@@ -1,15 +1,29 @@
+data/
+third_party/
+__pycache__/
+*.pyc
+.DS_Store
+annotate/media/
+models/
+yolo11n.pt
+
+# never commit credentials
+.concentrate_key
+*.key
+.env
+
 # Environments
 .venv/
 .venv.x86_64.bak/
-__pycache__/
-*.pyc
 .pytest_cache/
 
 # Vendored upstream repos (kept on disk, cloned by `make external`)
 /external/
 
-# Experiment outputs
-/results/*.csv
+# Assembly101 sweep outputs (regenerate with `make train && make results`)
+/results/label_efficiency*.csv
+/results/summary_*.csv
+/results/per_task.csv
 /results/*.png
 
 # generated UI output (source is ui/template.html + scripts/07_build_ui.py)

@@ -1,0 +1,330 @@
+<title>ExoEgo Run Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#eef1f0; --surface:#f7f9f8; --sunk:#e3e8e6;
+  --ink:#141a1c; --ink-2:#3d4a4d; --steel:#69787b; --rule:#d2dad8;
+  --teal:#0f6e78; --teal-soft:#dceaeb;
+  --amber:#a86a04; --amber-soft:#f7ead1; --amber-rule:#dfa63a;
+  --done:#3c6f45; --done-soft:#dbe8dc;
+  --shadow:0 1px 2px rgba(20,26,28,.06), 0 4px 14px rgba(20,26,28,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1214; --surface:#161c1f; --sunk:#1e2529;
+    --ink:#e2e8e6; --ink-2:#aab6b6; --steel:#839596; --rule:#2b3438;
+    --teal:#4fb3bd; --teal-soft:#12333a;
+    --amber:#e8ad4a; --amber-soft:#33260f; --amber-rule:#6b4f18;
+    --done:#78b482; --done-soft:#17301c;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1214; --surface:#161c1f; --sunk:#1e2529;
+  --ink:#e2e8e6; --ink-2:#aab6b6; --steel:#839596; --rule:#2b3438;
+  --teal:#4fb3bd; --teal-soft:#12333a;
+  --amber:#e8ad4a; --amber-soft:#33260f; --amber-rule:#6b4f18;
+  --done:#78b482; --done-soft:#17301c;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.55; margin:0;
+  padding:0 20px 96px;
+}
+.wrap{max-width:940px; margin:0 auto}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+code{font-size:.87em; background:var(--sunk); padding:.12em .38em; border-radius:3px; word-break:break-word}
+h1,h2,h3,.eyebrow{font-family:"Barlow Condensed","IBM Plex Sans",sans-serif; text-wrap:balance}
+
+/* header */
+header{padding:52px 0 30px; border-bottom:2px solid var(--ink)}
+.eyebrow{text-transform:uppercase; letter-spacing:.14em; font-size:12.5px; font-weight:600; color:var(--teal)}
+h1{font-size:clamp(40px,7vw,64px); line-height:.95; margin:10px 0 0; font-weight:700; letter-spacing:-.01em}
+.thesis{margin:20px 0 0; max-width:62ch; font-size:17px; color:var(--ink-2)}
+.thesis strong{color:var(--ink); font-weight:600}
+.clock{margin:18px 0 0; font-size:13px; color:var(--steel)}
+
+/* progress */
+.progress{position:sticky; top:0; z-index:10; background:var(--paper);
+  padding:12px 0 11px; border-bottom:1px solid var(--rule);
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.bar{flex:1 1 180px; height:6px; background:var(--sunk); border-radius:3px; overflow:hidden; min-width:120px}
+.bar span{display:block; height:100%; width:0; background:var(--teal); transition:width .25s ease}
+.count{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--steel); font-variant-numeric:tabular-nums}
+.reset{margin-left:auto; background:none; border:1px solid var(--rule); color:var(--steel);
+  font:500 11.5px/1 "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.08em;
+  padding:7px 11px; border-radius:4px; cursor:pointer}
+.reset:hover{border-color:var(--steel); color:var(--ink)}
+.reset:focus-visible{outline:2px solid var(--teal); outline-offset:2px}
+
+section{margin:44px 0 0}
+h2{font-size:13px; text-transform:uppercase; letter-spacing:.16em; font-weight:600;
+   color:var(--steel); margin:0 0 16px; padding-bottom:9px; border-bottom:1px solid var(--rule)}
+
+/* tiers */
+.tiers{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.tier{background:var(--surface); border:1px solid var(--rule); border-radius:7px;
+  padding:16px 17px; box-shadow:var(--shadow)}
+.tier.must{border-color:var(--teal); background:var(--teal-soft)}
+.tier .lab{font-family:"Barlow Condensed",sans-serif; font-size:19px; font-weight:700; letter-spacing:.01em}
+.tier.must .lab{color:var(--teal)}
+.tier p{margin:6px 0 0; font-size:14px; color:var(--ink-2)}
+.tier .robot{margin:11px 0 0; font-size:11.5px; text-transform:uppercase; letter-spacing:.09em;
+  color:var(--steel); font-family:"IBM Plex Mono",monospace}
+.note{margin:14px 0 0; font-size:14.5px; color:var(--ink-2)}
+
+/* gates */
+.gate{background:var(--amber-soft); border:1px solid var(--amber-rule); border-left-width:4px;
+  border-radius:0 6px 6px 0; padding:13px 16px; margin:0 0 10px}
+.gate .id{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:500;
+  color:var(--amber); text-transform:uppercase; letter-spacing:.07em}
+.gate .cond{margin:3px 0 0; font-weight:600; font-size:15px}
+.gate .fail{margin:4px 0 0; font-size:14px; color:var(--ink-2)}
+
+/* tracks */
+.track{background:var(--surface); border:1px solid var(--rule); border-radius:7px;
+  padding:20px 21px 14px; margin:0 0 14px; box-shadow:var(--shadow)}
+.track > h3{margin:0; font-size:24px; font-weight:700; letter-spacing:-.005em; display:flex;
+  align-items:baseline; gap:11px; flex-wrap:wrap}
+.who{font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-weight:400; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--steel); border:1px solid var(--rule); border-radius:3px; padding:3px 7px}
+.track > p.sub{margin:7px 0 15px; font-size:14px; color:var(--ink-2)}
+
+ul.items{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+li.item{display:flex; gap:11px; align-items:flex-start; padding:9px 0;
+  border-top:1px solid var(--rule); cursor:pointer}
+li.item:first-child{border-top:none}
+li.item .box{flex:0 0 17px; width:17px; height:17px; margin-top:3px; border:1.5px solid var(--steel);
+  border-radius:3.5px; display:grid; place-items:center; transition:.14s}
+li.item .box svg{width:11px; height:11px; opacity:0; transition:.14s}
+li.item .txt{flex:1; font-size:14.5px}
+li.item.done .box{background:var(--done); border-color:var(--done)}
+li.item.done .box svg{opacity:1}
+li.item.done .txt{color:var(--steel); text-decoration:line-through; text-decoration-thickness:1px}
+li.item:focus-visible{outline:2px solid var(--teal); outline-offset:2px; border-radius:3px}
+li.item .flag{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  font-weight:500; text-transform:uppercase; letter-spacing:.07em; padding:2px 6px; border-radius:3px;
+  background:var(--amber-soft); color:var(--amber); border:1px solid var(--amber-rule); white-space:nowrap}
+li.item .flag.res{background:var(--teal-soft); color:var(--teal); border-color:var(--teal)}
+.warn{margin:13px 0 2px; padding:11px 14px; background:var(--sunk); border-radius:5px;
+  font-size:13.5px; color:var(--ink-2)}
+.warn b{color:var(--ink); font-weight:600}
+
+footer{margin:48px 0 0; padding-top:20px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--steel)}
+footer a{color:var(--teal); text-decoration:none; border-bottom:1px solid transparent}
+footer a:hover{border-bottom-color:var(--teal)}
+footer ul{list-style:none; padding:0; margin:8px 0 0; display:flex; flex-direction:column; gap:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">OpenArm v1 · World Context · 7 hours</div>
+  <h1>ExoEgo Run Sheet</h1>
+  <p class="thesis"><strong>Exo video teaches a model the metric scale that ego video cannot see.</strong>
+     That lets ego-only factory footage drive a real arm.</p>
+  <p class="clock">All times are T+ from kickoff. Tap any line to check it off — progress saves in this browser.</p>
+</header>
+
+<div class="progress">
+  <div class="bar"><span id="fill"></span></div>
+  <div class="count" id="count">0 / 0</div>
+  <button class="reset" id="reset">Reset</button>
+</div>
+
+<section>
+  <h2>Result tiers — what ships if things break</h2>
+  <div class="tiers">
+    <div class="tier must">
+      <div class="lab">T1 · Must have</div>
+      <p>mm-error table: ego-only vs ego+exo 3D hand pose on AssemblyHands.</p>
+      <div class="robot">No robot needed</div>
+    </div>
+    <div class="tier">
+      <div class="lab">T2</div>
+      <p>OpenArm executes a trajectory derived from World Context footage.</p>
+      <div class="robot">Robot required</div>
+    </div>
+    <div class="tier">
+      <div class="lab">T3</div>
+      <p>Arm A/B: raw-ego vs exo-distilled trajectory, N trials each.</p>
+      <div class="robot">Robot required</div>
+    </div>
+  </div>
+  <p class="note">T1 alone is a defensible submission. Protect it before anything else.</p>
+</section>
+
+<section>
+  <h2>Hard gates — decide, then move on</h2>
+  <div class="gate">
+    <div class="id">G1 · T+1:00 · Track B</div>
+    <div class="cond">3D ground truth reprojects onto the hands in both ego and exo views.</div>
+    <div class="fail">Fail → we've misread the dataset. Stop Track B and fix before building on it.</div>
+  </div>
+  <div class="gate">
+    <div class="id">G2 · T+1:30 · Track A</div>
+    <div class="cond">One OpenArm motor responds to a commanded position.</div>
+    <div class="fail">Fail → drop to the perception-gating fallback. Robot becomes camera-only. No retry.</div>
+  </div>
+  <div class="gate">
+    <div class="id">G3 · T+2:00 · Track C</div>
+    <div class="cond">A hand is detected in ≥30% of World Context frames for the chosen task.</div>
+    <div class="fail">Fail → switch task. Do not try to fix the detector.</div>
+  </div>
+  <div class="gate">
+    <div class="id">Freeze · T+5:30 · Everyone</div>
+    <div class="cond">No new code. Plots, slides, and video only.</div>
+    <div class="fail">Hackathons are lost in the last hour, not the first.</div>
+  </div>
+</section>
+
+<section>
+  <h2>The work</h2>
+
+  <div class="track">
+    <h3>Setup <span class="who">T+0:00 · Everyone · 20 min</span></h3>
+    <ul class="items">
+      <li class="item"><span class="txt"><code>brew install ffmpeg</code></span></li>
+      <li class="item"><span class="txt"><code>pip install opencv-python mediapipe scipy scikit-learn matplotlib tqdm gdown</code></span></li>
+      <li class="item"><span class="txt">Apply for Ego-Exo4D access — 2 min, free option, may unlock later</span></li>
+      <li class="item"><span class="txt">Start AssemblyHands <b>annotations</b> download in background — small, and it gates everything</span></li>
+      <li class="item"><span class="txt">Agree repo layout <code>data/ src/ results/</code>, one branch, small commits</span></li>
+      <li class="item"><span class="txt">Copy World Context <code>meta/</code> and chosen task clips from the USB to local SSD</span></li>
+    </ul>
+    <p class="warn"><b>The USB is a bottleneck.</b> Re-reading 1080p video off it will throttle every later step. 590 GB free locally — use it.</p>
+  </div>
+
+  <div class="track">
+    <h3>Track A · OpenArm <span class="who">P1 · starts immediately</span></h3>
+    <p class="sub">Current limit before position command. Always, no exceptions.</p>
+    <ul class="items">
+      <li class="item"><span class="txt">CAN bring-up: <code>sudo ip link set can0 up type can bitrate 1000000</code>, confirm <code>candump can0</code> shows traffic</span></li>
+      <li class="item"><span class="txt">Enumerate motor IDs</span></li>
+      <li class="item"><span class="txt">Set torque/current limit to ~15% of rated <b>before any motion command</b></span></li>
+      <li class="item"><span class="txt">Verify the limit clamps — stall a joint by hand. If it doesn't stall, the limit is not applied</span></li>
+      <li class="item"><span class="txt">One joint responds to a slow position command <span class="flag">Gate G2</span></span></li>
+      <li class="item"><span class="txt">Gripper calibration: slow current-limited close, log current, detect range from current rise — never by commanding endpoints. Soft limits at 90% of range</span></li>
+      <li class="item"><span class="txt">Watchdog cuts on sustained high current; e-stop reachable at all times</span></li>
+      <li class="item"><span class="txt">Expose <code>move_to(joint_targets)</code> and <code>home()</code> as the only public API</span></li>
+      <li class="item"><span class="txt">IK against the OpenArm URDF via ikpy or pinocchio — fallback is reduced-DoF direct mapping</span></li>
+    </ul>
+    <p class="warn"><b>If G2 fails:</b> train a grasp-moment classifier on World Context clips, run it on the Jetson against the arm's camera, and let it trigger a scripted motion. Dataset-trained perception gating real control still qualifies for the bonus track.</p>
+  </div>
+
+  <div class="track">
+    <h3>Track B · AssemblyHands <span class="who">P2</span></h3>
+    <p class="sub">Synchronized ego + exo, 3D hand keypoints, intrinsics and extrinsics. No approval gate.</p>
+    <ul class="items">
+      <li class="item"><span class="txt">Download in order: annotations → one split of ego images → exo only for takes actually used. <b>Not</b> all 490K ego images</span></li>
+      <li class="item"><span class="txt">Loader: given a frame → ego image, exo images, 3D keypoints, intrinsics, extrinsics</span></li>
+      <li class="item"><span class="txt">Reproject 3D GT into ego and exo, overlay, eyeball it <span class="flag">Gate G1</span></span></li>
+      <li class="item"><span class="txt">Ego-only 3D estimate — monocular, scale-ambiguous. MediaPipe or HaMeR</span></li>
+      <li class="item"><span class="txt">Exo triangulation across static cams using the provided extrinsics → metric 3D</span></li>
+      <li class="item"><span class="txt">Error vs ground truth for both <span class="flag res">T1 result</span></span></li>
+      <li class="item"><span class="txt">Distillation head: ego features → metric scale correction, supervised by exo-derived 3D. Minutes to train — this is what transfers</span></li>
+    </ul>
+  </div>
+
+  <div class="track">
+    <h3>Track C · World Context <span class="who">P3</span></h3>
+    <p class="sub">Ego-only industrial footage, fisheye, with calibrated gyro. This is what drives the arm.</p>
+    <ul class="items">
+      <li class="item"><span class="txt">Filter to <code>calibration_status == "intrinsics_and_gyro"</code> — 200 of 424 clips</span></li>
+      <li class="item"><span class="txt">Primary task <code>bottle-surface-buffing</code> — planar, repetitive, one grasp, lowest gripper risk. Backup <code>component-alignment-sticker-application</code>. Avoid <code>garment-folding-*</code></span></li>
+      <li class="item"><span class="txt">Decode at 5 fps → undistort with Kannala-Brandt intrinsics → <b>convert to grayscale</b>, because AssemblyHands ego cams are monochrome</span></li>
+      <li class="item"><span class="txt">IMU: subtract bias (<b>bias is dps, samples are rad/s — convert</b>) → apply gyro→camera matrix <code>M</code> → apply <code>time_offset_ms</code> → integrate to orientation. Never apply the GPMF ORIN remap first</span></li>
+      <li class="item"><span class="txt">Hand detection rate on the chosen task <span class="flag">Gate G3</span></span></li>
+      <li class="item"><span class="txt">Head-rotation-compensated 3D hand trajectory, smoothed</span></li>
+    </ul>
+  </div>
+
+  <div class="track">
+    <h3>Track D · Integration <span class="who">P4 · joins T+2:30</span></h3>
+    <ul class="items">
+      <li class="item"><span class="txt">Retarget: 3D hand trajectory → normalize into arm workspace box → IK → joint targets</span></li>
+      <li class="item"><span class="txt">Rate-limit and clamp every command. Plot the trajectory before it touches hardware</span></li>
+      <li class="item"><span class="txt">Dry run on plots only — confirm nothing exceeds soft limits</span></li>
+      <li class="item"><span class="txt">Arm executes a World Context-derived trajectory <span class="flag res">T2 result</span></span></li>
+      <li class="item"><span class="txt">Arm A/B: raw-ego vs exo-distilled, N trials each, count successes <span class="flag res">T3 result</span></span></li>
+      <li class="item"><span class="txt">Record video of both runs with identical framing</span></li>
+    </ul>
+  </div>
+
+  <div class="track">
+    <h3>Freeze and present <span class="who">T+5:30</span></h3>
+    <ul class="items">
+      <li class="item"><span class="txt"><b>Code freeze.</b> Nothing new after this line</span></li>
+      <li class="item"><span class="txt">Plot 1 — mm error, ego vs ego+exo</span></li>
+      <li class="item"><span class="txt">Plot 2 — arm success counts, ego vs exo-distilled</span></li>
+      <li class="item"><span class="txt">Slide quoting the World Context data card: metric scale was never calibrated. Their own documentation is the motivation for exo</span></li>
+      <li class="item"><span class="txt">Video of the arm moving, driven by factory footage</span></li>
+      <li class="item"><span class="txt">Say the bonus-track framing out loud: the dataset is in the causal chain that moves the arm</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  Sources
+  <ul>
+    <li><a href="https://assemblyhands.github.io/">AssemblyHands</a> · <a href="https://github.com/facebookresearch/assemblyhands-toolkit">toolkit</a> · <a href="https://arxiv.org/pdf/2203.14712">Assembly101 paper</a></li>
+    <li><a href="https://docs.ego-exo4d-data.org/getting-started/">Ego-Exo4D</a> — apply now, ~48 h approval</li>
+    <li><a href="https://prior.allenai.org/projects/charades">Charades-Ego</a> — fallback, direct download, no registration</li>
+  </ul>
+</footer>
+</div>
+
+<script>
+(function(){
+  var KEY='exoego-runsheet-v1';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
+
+  function hash(s){ var h=5381,i=0; for(;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; } return 'i'+(h>>>0).toString(36); }
+
+  var CHECK='<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6.4 4.6 9 10 3.2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var items=Array.prototype.slice.call(document.querySelectorAll('li.item'));
+  var fill=document.getElementById('fill'), count=document.getElementById('count');
+
+  items.forEach(function(li){
+    var id=hash(li.textContent.trim());
+    li.dataset.id=id;
+    var box=document.createElement('span');
+    box.className='box'; box.innerHTML=CHECK;
+    li.insertBefore(box, li.firstChild);
+    li.setAttribute('role','checkbox');
+    li.setAttribute('tabindex','0');
+    if(state[id]) li.classList.add('done');
+    li.setAttribute('aria-checked', state[id]?'true':'false');
+
+    function toggle(){
+      var on=!li.classList.contains('done');
+      li.classList.toggle('done', on);
+      li.setAttribute('aria-checked', on?'true':'false');
+      if(on) state[id]=1; else delete state[id];
+      save(); render();
+    }
+    li.addEventListener('click', toggle);
+    li.addEventListener('keydown', function(e){
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggle(); }
+    });
+  });
+
+  function render(){
+    var done=items.filter(function(li){ return li.classList.contains('done'); }).length;
+    count.textContent=done+' / '+items.length;
+    fill.style.width=(items.length?(done/items.length*100):0)+'%';
+  }
+  render();
+
+  document.getElementById('reset').addEventListener('click', function(){
+    state={}; save();
+    items.forEach(function(li){ li.classList.remove('done'); li.setAttribute('aria-checked','false'); });
+    render();
+  });
+})();
+</script>

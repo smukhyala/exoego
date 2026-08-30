@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ExoEgo Annotator</title>
+<style>
+:root{
+  --paper:#eef1f0; --surface:#f7f9f8; --sunk:#e3e8e6;
+  --ink:#141a1c; --ink2:#3d4a4d; --steel:#69787b; --rule:#d2dad8;
+  --teal:#0f6e78; --teal-soft:#dceaeb;
+  --amber:#a86a04; --amber-soft:#f7ead1;
+  --done:#3c6f45; --done-soft:#dbe8dc;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0e1214; --surface:#161c1f; --sunk:#1e2529;
+  --ink:#e2e8e6; --ink2:#aab6b6; --steel:#839596; --rule:#2b3438;
+  --teal:#4fb3bd; --teal-soft:#12333a;
+  --amber:#e8ad4a; --amber-soft:#33260f;
+  --done:#78b482; --done-soft:#17301c;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:14px/1.5 "IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:14px 18px 40px}
+header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding-bottom:10px;border-bottom:2px solid var(--ink)}
+h1{font-size:19px;margin:0;letter-spacing:-.01em}
+.sub{color:var(--steel);font-size:12.5px}
+.spacer{flex:1}
+button{font:inherit;cursor:pointer;border-radius:5px;border:1px solid var(--rule);
+  background:var(--surface);color:var(--ink);padding:7px 12px}
+button:hover{border-color:var(--steel)}
+button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.bar{display:flex;align-items:center;gap:12px;margin:12px 0;flex-wrap:wrap}
+.prog{flex:1;min-width:160px;height:7px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.prog span{display:block;height:100%;width:0;background:var(--teal);transition:width .2s}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.vids{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vid{background:var(--surface);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.vid h2{margin:0;padding:8px 12px;font-size:12px;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--steel);border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:center}
+.vid h2 em{font-style:normal;text-transform:none;letter-spacing:0;font-size:11.5px}
+video{width:100%;display:block;background:#000}
+.note{background:var(--amber-soft);border-left:4px solid var(--amber);
+  padding:10px 14px;border-radius:0 6px 6px 0;margin:14px 0;font-size:13.5px}
+.note b{color:var(--amber)}
+section.pick{margin:16px 0 0}
+h3{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--steel);
+  margin:0 0 8px;font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:7px}
+.opt{position:relative;padding:8px 12px 8px 26px;font-size:13.5px}
+.opt .k{position:absolute;left:7px;top:50%;transform:translateY(-50%);
+  font:500 10px/1 "IBM Plex Mono",monospace;color:var(--steel)}
+.opt.sel{background:var(--teal-soft);border-color:var(--teal);color:var(--teal);font-weight:600}
+.opt.sel .k{color:var(--teal)}
+.status{margin:16px 0 0;padding:12px 14px;border-radius:7px;background:var(--surface);
+  border:1px solid var(--rule);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.status .cur{font-size:15px;font-weight:600}
+.pill{padding:3px 9px;border-radius:99px;font-size:12px;background:var(--sunk);color:var(--ink2)}
+.pill.ok{background:var(--done-soft);color:var(--done);font-weight:600}
+kbd{font:500 11px/1 "IBM Plex Mono",monospace;background:var(--sunk);
+  border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:2px 5px}
+.help{margin:14px 0 0;color:var(--steel);font-size:12.5px;display:flex;gap:14px;flex-wrap:wrap}
+@media(max-width:800px){.vids{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>ExoEgo Annotator</h1>
+  <span class="sub">World Context · scooter assembly · pre-aligned pair</span>
+  <span class="spacer"></span>
+  <button id="export">Export JSON</button>
+</header>
+
+<div class="bar">
+  <button id="prev">← Prev</button>
+  <button id="next">Next →</button>
+  <div class="prog"><span id="fill"></span></div>
+  <span class="mono" id="count">0 / 0</span>
+  <span class="mono sub" id="clock"></span>
+</div>
+
+<div class="vids">
+  <div class="vid">
+    <h2>Exo — ceiling <em>the robot's view</em></h2>
+    <video id="exo" muted playsinline preload="auto" src="media/exo.mp4"></video>
+  </div>
+  <div class="vid">
+    <h2>Ego — head-worn <em>the human's view</em></h2>
+    <video id="ego" muted playsinline preload="auto" src="media/ego.mp4"></video>
+  </div>
+</div>
+
+<div class="note">
+  <b>Label what is actually happening, using BOTH views.</b> The point of this
+  data is to test each view separately afterwards, so the labels themselves must
+  not favour either one. If an object is only legible in one view, still label it.
+  Use <b>unclear</b> only when both views leave you genuinely unsure.
+</div>
+
+<section class="pick">
+  <h3>Verb — what is being done</h3>
+  <div class="opts" id="verbs"></div>
+</section>
+
+<section class="pick">
+  <h3>Noun — what is being handled</h3>
+  <div class="opts" id="nouns"></div>
+</section>
+
+<div class="status">
+  <span class="cur" id="cur">—</span>
+  <span class="pill" id="state">unlabelled</span>
+  <span class="spacer"></span>
+  <span class="mono sub" id="stats"></span>
+</div>
+
+<div class="help">
+  <span><kbd>1</kbd>–<kbd>9</kbd><kbd>0</kbd> verb</span>
+  <span><kbd>a</kbd>–<kbd>z</kbd> noun</span>
+  <span><kbd>←</kbd><kbd>→</kbd> window</span>
+  <span><kbd>space</kbd> replay</span>
+  <span><kbd>u</kbd> unclear</span>
+  <span>saves automatically in this browser</span>
+</div>
+
+</div>
+
+<script>
+const WINDOW = 5.0;              // seconds per labelling window
+// The media is encoded with a forced keyframe at each window boundary, but at
+// 29.97 fps those land at 5.005 / 5.038 s rather than exactly 5.000. Seeking to
+// the exact boundary would snap back to the PREVIOUS keyframe and decode five
+// seconds forward, which is the stall this epsilon exists to avoid.
+const SEEK_EPS = 0.08;
+const DURATION = 898.8;          // synchronized overlap
+const N = Math.floor(DURATION / WINDOW);
+const KEY = 'exoego-annot-v1';
+
+const VERBS = ["pick up","put down","attach / fit","detach / remove","screw / tighten",
+  "insert","position / align","connect wire","inspect / check","idle / walk"];
+const NOUNS = ["frame / chassis","seat","battery","wheel / tyre","handlebar","mirror",
+  "body panel","footboard","screw / bolt","screwdriver","wrench","wire / harness",
+  "connector","carton / box","sticker / label","cable tie","other","none"];
+const NKEYS = "asdfghjklzxcvbnmqw";
+
+const exo = document.getElementById('exo'), ego = document.getElementById('ego');
+let i = 0, data = {};
+try { data = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ data = {}; }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){} }
+
+function buildOpts(el, items, keys, kind){
+  el.innerHTML = '';
+  items.forEach((label, idx) => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.dataset.kind = kind; b.dataset.value = label;
+    const k = kind === 'verb' ? String((idx+1) % 10) : keys[idx];
+    b.innerHTML = `<span class="k">${k}</span>${label}`;
+    b.onclick = () => choose(kind, label);
+    el.appendChild(b);
+  });
+}
+buildOpts(document.getElementById('verbs'), VERBS, null, 'verb');
+buildOpts(document.getElementById('nouns'), NOUNS, NKEYS, 'noun');
+
+function rec(){ return data[i] || (data[i] = {}); }
+
+function choose(kind, value){
+  const r = rec();
+  r[kind] = (r[kind] === value) ? undefined : value;
+  if (r.unclear) r.unclear = false;
+  save(); render();
+  if (r.verb && r.noun) setTimeout(() => go(i+1), 220);
+}
+
+function markUnclear(){
+  const r = rec();
+  r.unclear = !r.unclear;
+  if (r.unclear){ r.verb = undefined; r.noun = undefined; }
+  save(); render();
+  if (r.unclear) setTimeout(() => go(i+1), 200);
+}
+
+function seek(){
+  const t = i * WINDOW + SEEK_EPS;
+  [exo, ego].forEach(v => {
+    try {
+      v.currentTime = t;
+      const p = v.play();
+      if (p && p.catch) p.catch(()=>{});
+    } catch(e){}
+  });
+}
+
+// Loop the current window. The media is encoded with a keyframe at every window
+// boundary, so these seeks land exactly and cheaply; without that the browser
+// has to decode from the previous keyframe and playback stalls.
+function clampLoop(v){
+  const t0 = i * WINDOW + SEEK_EPS, t1 = (i + 1) * WINDOW;
+  if (v.currentTime >= t1 - 0.03 || v.currentTime < t0 - 0.3){
+    try { v.currentTime = t0; } catch(e){ return; }
+  }
+  if (v.paused){ const p = v.play(); if (p && p.catch) p.catch(()=>{}); }
+}
+[exo, ego].forEach(v => {
+  v.addEventListener('timeupdate', () => clampLoop(v));
+  v.addEventListener('ended', () => clampLoop(v));
+  v.addEventListener('pause', () => { if (!document.hidden) clampLoop(v); });
+});
+setInterval(() => [exo, ego].forEach(clampLoop), 500);   // backstop
+
+function go(n){ i = Math.max(0, Math.min(N-1, n)); seek(); render(); }
+
+function render(){
+  const r = data[i] || {};
+  document.querySelectorAll('.opt').forEach(b => {
+    const on = (b.dataset.kind === 'verb' && r.verb === b.dataset.value)
+            || (b.dataset.kind === 'noun' && r.noun === b.dataset.value);
+    b.classList.toggle('sel', !!on);
+  });
+  const done = Object.values(data).filter(d => (d.verb && d.noun) || d.unclear).length;
+  document.getElementById('count').textContent = `${i+1} / ${N}`;
+  document.getElementById('fill').style.width = (100*done/N) + '%';
+  document.getElementById('clock').textContent =
+    `t = ${(i*WINDOW).toFixed(1)}–${((i+1)*WINDOW).toFixed(1)}s`;
+  document.getElementById('cur').textContent =
+    r.unclear ? 'unclear' : ((r.verb || '—') + '  ·  ' + (r.noun || '—'));
+  const st = document.getElementById('state');
+  const ok = (r.verb && r.noun) || r.unclear;
+  st.textContent = ok ? 'labelled' : 'unlabelled';
+  st.className = 'pill' + (ok ? ' ok' : '');
+  document.getElementById('stats').textContent = `${done} labelled · ${N-done} left`;
+}
+
+document.getElementById('prev').onclick = () => go(i-1);
+document.getElementById('next').onclick = () => go(i+1);
+
+addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === 'arrowleft'){ e.preventDefault(); return go(i-1); }
+  if (k === 'arrowright'){ e.preventDefault(); return go(i+1); }
+  if (k === ' '){ e.preventDefault(); return seek(); }
+  if (k === 'u'){ e.preventDefault(); return markUnclear(); }
+  if (/^[0-9]$/.test(k)){
+    const idx = (k === '0') ? 9 : (parseInt(k,10) - 1);
+    if (idx < VERBS.length){ e.preventDefault(); choose('verb', VERBS[idx]); }
+    return;
+  }
+  const ni = NKEYS.indexOf(k);
+  if (ni >= 0 && ni < NOUNS.length){ e.preventDefault(); choose('noun', NOUNS[ni]); }
+});
+
+document.getElementById('export').onclick = () => {
+  const rows = [];
+  for (let j = 0; j < N; j++){
+    const r = data[j]; if (!r) continue;
+    if (!r.unclear && !(r.verb && r.noun)) continue;
+    rows.push({ window: j, t_start: +(j*WINDOW).toFixed(2), t_end: +((j+1)*WINDOW).toFixed(2),
+                verb: r.unclear ? null : r.verb, noun: r.unclear ? null : r.noun,
+                unclear: !!r.unclear });
+  }
+  const blob = new Blob([JSON.stringify(
+    { source: "world_context_ego_exo_pair", window_s: WINDOW, offset_s: 11.16,
+      ego: "GX014991-ego-C2920.MP4", exo: "GX010104-exo-C7459.MP4",
+      verbs: VERBS, nouns: NOUNS, n_windows: N, labels: rows }, null, 2)],
+    {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'exoego_labels.json';
+  a.click();
+};
+
+// Init once both are decodable. Guard the case where a video is ALREADY loaded
+// before the listener attaches, which otherwise leaves the tool stuck at t=0.
+let ready = 0;
+function armed(){ if (++ready === 2) go(0); }
+[exo, ego].forEach(v => {
+  if (v.readyState >= 2) armed();
+  else v.addEventListener('loadeddata', armed, { once: true });
+});
+render();
+</script>
+</body>
+</html>

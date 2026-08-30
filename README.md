@@ -1,18 +1,125 @@
-# exoego
+# ExoEgo
 
-**Does exocentric human video reduce the amount of demonstration data needed to learn
-from egocentric video?**
+**Analysis of paired egocentric / exocentric industrial video from World Context.**
 
-Assembly101 records the same assembly sessions from 8 fixed third-person cameras and 4
-head-mounted cameras at once. That gives synchronised ego/exo pairs of the *same action*
-for free, so exo footage can be used as unlabelled auxiliary signal while the model is
-evaluated strictly on ego.
+World Context supplied a synchronized ego/exo pair from a scooter assembly floor.
+This repo recovers the synchronization, then measures what the exocentric view
+provides that the egocentric view cannot.
 
-The headline experiment is a **label-efficiency curve**: verb-classification accuracy on
-held-out ego clips as a function of how many labelled ego clips the model was given. If
-exo helps, the gain should be largest where labels are scarcest.
+---
 
-## The experiment
+## The pair
+
+| | ego | exo |
+|---|---|---|
+| file | `GX014991-ego-C2920.MP4` | `GX010104-exo-C7459.MP4` |
+| mount | head-worn | ceiling, looking down |
+| duration | 1129.7 s | 910.0 s |
+| video | 1920x1080 HEVC 29.97 fps | 1920x1080 HEVC 29.97 fps |
+| audio | present | present |
+| telemetry | GPMF `bin_data`, 1129 pkts | GPMF `bin_data`, 910 pkts |
+
+Two things here are **not** in the packaged 424-clip release: **audio**, and
+**GPMF telemetry on both cameras**. The release stripped audio and shipped IMU
+for ego only. Both matter — audio is what made synchronization possible.
+
+## Stage 1 — Synchronization ✅
+
+`python -m src.sync_audio`
+
+The cameras were started ~11 s apart, so nothing else is possible until the
+offset is known.
+
+**First attempt failed.** Correlating log-RMS energy envelopes gave a peak of
+0.195 that sat *below* the 99.9th percentile of the correlogram — no peak at all.
+The reason is the room: a workshop is dominated by continuous broadband noise
+(compressors, fans) that swamps an energy envelope and carries no timing
+information.
+
+**What worked** was a spectral-flux onset envelope, which discards steady-state
+energy and keeps transients — tool strikes, dropped parts — which is what the two
+microphones genuinely share.
+
+```
+offset          +11.16 s   (ego t=0 -> exo t=11.16)
+peak            0.1355     3.55x the 99.9th percentile
+top candidates  11.15 / 11.16 / 11.17 s   (adjacent lags, +-10 ms)
+overlap         898.8 s = 15.0 min = 26,937 frame pairs
+```
+
+Confirmed visually: at the aligned timestamps both views show the same grey
+battery panel being fitted, the same worker in a red plaid shirt, and the ego
+wearer's own "apollo" shirt matches the person seen from overhead.
+
+## Stage 2 — What exo provides ✅
+
+`python -m src.exo_analysis`
+
+### Camera instability — the mechanism
+
+Mean frame-to-frame pixel change (0-255), 2 fps:
+
+| | median | p90 |
+|---|---|---|
+| ego | 44.02 | 58.45 |
+| exo | 6.43 | 12.45 |
+
+**The ego view changes 6.85x as much between frames.** The exo camera is bolted
+to the ceiling; the ego camera rides a head that turns to talk, fetch parts and
+check other work. That instability is *why* the ego view keeps losing the task,
+and it is measured without any semantics, so no detector bias can touch it.
+
+### Motion blur
+
+| | median | p10 |
+|---|---|---|
+| ego | 1977.3 | 1347.1 |
+| exo | 2161.3 | 2037.9 |
+
+**57.3%** of ego frames are blurrier than the exo camera's 10th percentile.
+
+### What we could NOT show, and why
+
+A first pass asked YOLO "can you see the scooter" per view and reported exo at
+2.0% against ego's 19.9%. **That was an artifact and it is retracted.** A
+COCO-trained detector has never seen a partly-assembled scooter from directly
+overhead: it scores the work object at 0.08-0.22 confidence in the exo view and
+0.53-0.75 in ego. The same bias suppressed exo person counts.
+
+Sweeping the threshold rather than picking one shows person visibility is
+threshold-dependent and inconclusive:
+
+| conf | ego mean | exo mean | exo/ego |
+|---|---|---|---|
+| 0.05 | 5.84 | 4.52 | 0.77 |
+| 0.20 | 2.25 | 1.98 | 0.88 |
+| 0.50 | 1.12 | 0.88 | 0.79 |
+
+The ratio stays below 1 at every threshold, but overhead people are out of
+distribution for this detector, so this does **not** establish that ego sees more
+people. It establishes that **off-the-shelf semantic detectors are not comparable
+across viewpoints** — which is itself a real finding for anyone building ego/exo
+benchmarks.
+
+**Methodological rule this yields:** never compare two viewpoints at a single
+detector confidence threshold. Sweep it, or use view-agnostic measures.
+
+---
+
+## Stage 3 — Does exo video reduce the labels ego needs? (Assembly101)
+
+The World Context pair above is a single session: enough to characterise *what the
+two viewpoints differ in*, not enough to train on. This stage moves to Assembly101,
+which ships 8 fixed and 4 head-mounted cameras recording the same assembly sessions,
+and asks the quantitative version of the question: **does exocentric video reduce the
+number of labelled egocentric clips needed to learn a task?**
+
+Evaluation is ego-only throughout; exo is unlabelled auxiliary training signal that is
+never available at test time.
+
+`make find && make download && make features && make train && make results`
+
+### The experiment
 
 Three configs. All are evaluated **ego-only**; exo is never available at eval time.
 
@@ -38,7 +145,7 @@ Two further fairness constraints:
 Evaluation reports top-1, **mean-per-class** accuracy (verb classes are heavily imbalanced
 — "pick up" alone is ~19% of segments), and classifier-free ego→ego retrieval mAP.
 
-### Go/no-go gate
+#### Go/no-go gate
 
 Before reading any `ego_exo` vs `ego_only` delta, `ego_only` at the full budget must clearly
 beat the majority-class baseline. Otherwise the comparison is measuring noise and the
@@ -63,7 +170,7 @@ which per-frame pooling discards. Swapping to a video-native encoder fixed it.
 Default backbone is therefore `videomae` (`configs/base.yaml`); pass `--backbone dinov2s`
 to reproduce the negative result.
 
-## What the data actually looks like
+### What the data actually looks like
 
 Established by inspection, not assumed — each of these shaped the code:
 
@@ -78,7 +185,7 @@ Established by inspection, not assumed — each of these shaped the code:
 
 Together the last two cut the download from **40.4 GB to 10.1 GB** with no loss of segments.
 
-### Ego/exo drift — the one real trap
+#### Ego/exo drift — the one real trap
 
 Ego and exo frame counts are *usually* equal but not always: some views drop frames
 uniformly, losing up to ~70 frames over a 28,000-frame session. This is **cumulative
@@ -100,7 +207,7 @@ rescaled by its share of the reference length (`video.timeline_scale`). Verifica
 Cross-view correlation *rises* after the correction (0.43 → 0.47), confirming the drift is
 linear. `tests/test_sync.py` guards this.
 
-### VideoMAE loads without its attention biases
+#### VideoMAE loads without its attention biases
 
 `transformers` expects `query.bias` / `key.bias` / `value.bias`, but VideoMAE checkpoints
 store the attention bias as separate `q_bias` / `v_bias` tensors (key bias is structurally
@@ -109,7 +216,7 @@ the load *succeeds*, the model runs, and it is quietly missing every learned att
 (query-bias magnitude 260.7 across 12 layers). `encoders.restore_videomae_attention_bias`
 remaps them, and `tests/test_encoders.py` guards it — nothing else would reveal it.
 
-## Setup
+### Setup
 
 ```bash
 make setup      # arm64 venv + deps
@@ -125,7 +232,7 @@ Rosetta) cannot install PyTorch at all, and would get no MPS acceleration if it 
 terms once, then `hf auth login`. Annotation CSVs come from
 [`assembly101-annotations`](https://github.com/assembly-101/assembly101-annotations).
 
-## Pipeline
+### Pipeline
 
 ```bash
 make find       # select recordings -> manifests/{recordings,segments}.csv
@@ -148,21 +255,9 @@ forced-colors mode.
 **not** read them — `04_extract_features.py` decodes each source video once instead, since
 seeking once per segment across ~4,300 segments costs hours.
 
-## Layout
+---
 
-```
-configs/          base.yaml + one file per config
-src/exoego/       annotations, views, video, encoders, heads, objectives, data, train, evaluate
-scripts/          01_find … 07_build_ui, run in order
-ui/               template.html (design) + label_efficiency.html (generated)
-tests/            sync, manifest, and feature integrity
-results/          label_efficiency.csv, summary_*.csv, curve png
-```
-
-Dataset files live outside git under `~/datasets/egoexo` (override with
-`EXOEGO_DATA_ROOT`).
-
-## Scope
+### Scope of Stage 3
 
 Human ego/exo representation learning only — no robot control. The point is to make the
 representation question clean and measurable first.
@@ -171,3 +266,37 @@ representation question clean and measurable first.
 may not beat `ego_only`; the control, 5 seeds, and error bars exist so that outcome is
 interpretable rather than ambiguous. Read the gate before the curves: a delta measured
 below the gate is seed noise, not evidence.
+
+---
+
+## Layout
+
+```
+World Context / AssemblyHands analysis
+  src/sync_audio.py       onset-based ego/exo synchronization
+  src/exo_analysis.py     view-agnostic comparison + threshold sweep
+  src/exo_coverage.py     first-pass semantic analysis (superseded; kept for the record)
+  src/calib.py            camera models, projection, triangulation
+  src/rig_analysis.py     AssemblyHands rig noise-propagation study
+  src/view_gap.py         viewpoint label-efficiency gap
+  src/pretrain_ablation.py  ego+exo pretraining ablation
+  src/auto_label.py       per-view auto-labelling + self-agreement control
+  annotate/               ego/exo annotation tool (serve.py provides Range support)
+  results/                *.json
+
+Assembly101 label-efficiency pipeline (Stage 3)
+  configs/                base.yaml + one file per config
+  src/exoego/             annotations, views, video, encoders, heads,
+                          objectives, data, train, evaluate
+  scripts/                01_find … 07_build_ui, run in order
+  tests/                  sync, manifest, feature, and encoder integrity
+  ui/template.html        label-efficiency page (rendered by 07_build_ui.py)
+```
+
+## Earlier work, still valid
+
+`python -m src.rig_analysis` — on AssemblyHands calibration, an upper bound on
+what each rig can achieve given realistic 2D detection error. Monocular ego error
+is **flat** across detection noise (205.7 mm at 0 px, 206.1 mm at 4 px) because
+the error is scale ambiguity, not detection quality: *you cannot fix a monocular
+rig with a better hand detector.* An 8-camera exo rig reaches 1.1 mm.
