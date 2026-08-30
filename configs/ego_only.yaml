@@ -1,0 +1,4 @@
+# Baseline: supervised verb classification on egocentric clips only.
+name: ego_only
+contrastive: none
+lambda: 0.0

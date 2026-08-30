@@ -1,0 +1,7 @@
+# Control: identical loss shape and parameter count to ego_exo, but the second
+# view is another temporal crop of the *same ego clip* -- so it carries no
+# exocentric information. Without this, any ego_exo gain is indistinguishable
+# from "adding any contrastive regulariser helps".
+name: ego_ego
+contrastive: ego_aug
+lambda: 0.5

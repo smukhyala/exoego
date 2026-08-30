@@ -1,0 +1,16 @@
+# Environments
+.venv/
+.venv.x86_64.bak/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Vendored upstream repos (kept on disk, cloned by `make external`)
+/external/
+
+# Experiment outputs
+/results/*.csv
+/results/*.png
+
+# generated UI output (source is ui/template.html + scripts/07_build_ui.py)
+/ui/label_efficiency.html

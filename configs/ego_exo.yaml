@@ -1,0 +1,6 @@
+# Treatment: the same supervised loss, plus cross-view alignment between each
+# ego clip and its synchronised exo clip. Exo is unlabelled auxiliary signal and
+# is never available at evaluation time.
+name: ego_exo
+contrastive: exo
+lambda: 0.5
