@@ -1,5 +1,5 @@
 {
-  "model": "gemini-3.7-flash",
+  "model": "gemini-3.5-flash",
   "window_s": 5.0,
   "offset_s": 11.16,
   "verbs": [
@@ -35,38 +35,38 @@
     "none"
   ],
   "n_windows": 179,
-  "verb_agreement": 0.26256983240223464,
-  "noun_agreement": 0.3128491620111732,
+  "verb_agreement": 0.2569832402234637,
+  "noun_agreement": 0.2122905027932961,
   "rows": [
     {
       "window": 0,
       "t_start": 0.0,
       "t_end": 5.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "exo": {
         "verb": "idle / walk",
         "noun": "none"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 1,
       "t_start": 5.0,
       "t_end": 10.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "insert",
+        "noun": "battery"
       },
       "exo": {
         "verb": "idle / walk",
         "noun": "none"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 2,
@@ -88,11 +88,11 @@
       "t_start": 15.0,
       "t_end": 20.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "frame / chassis"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
-        "verb": "inspect / check",
+        "verb": "attach / fit",
         "noun": "body panel"
       },
       "verb_agree": false,
@@ -107,11 +107,11 @@
         "noun": "none"
       },
       "exo": {
-        "verb": "inspect / check",
-        "noun": "mirror"
+        "verb": "idle / walk",
+        "noun": "none"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 5,
@@ -133,38 +133,38 @@
       "t_start": 30.0,
       "t_end": 35.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "connect wire",
+        "noun": "connector"
       },
       "exo": {
         "verb": "idle / walk",
         "noun": "none"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 7,
       "t_start": 35.0,
       "t_end": 40.0,
       "ego": {
-        "verb": "position / align",
+        "verb": "connect wire",
         "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
-      "verb_agree": false,
-      "noun_agree": true
+      "verb_agree": true,
+      "noun_agree": false
     },
     {
       "window": 8,
       "t_start": 40.0,
       "t_end": 45.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "inspect / check",
+        "noun": "frame / chassis"
       },
       "exo": {
         "verb": "put down",
@@ -194,11 +194,11 @@
       "t_end": 55.0,
       "ego": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
       "noun_agree": true
@@ -213,10 +213,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 12,
@@ -239,14 +239,14 @@
       "t_end": 70.0,
       "ego": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
       "verb_agree": true,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 14,
@@ -273,10 +273,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 16,
@@ -284,26 +284,26 @@
       "t_end": 85.0,
       "ego": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
       "verb_agree": true,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 17,
       "t_start": 85.0,
       "t_end": 90.0,
       "ego": {
-        "verb": "detach / remove",
-        "noun": "sticker / label"
+        "verb": "insert",
+        "noun": "wire / harness"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "attach / fit",
+        "noun": "sticker / label"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -314,11 +314,11 @@
       "t_end": 95.0,
       "ego": {
         "verb": "pick up",
-        "noun": "carton / box"
+        "noun": "wire / harness"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "connect wire",
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -329,14 +329,14 @@
       "t_end": 100.0,
       "ego": {
         "verb": "pick up",
-        "noun": "carton / box"
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "put down",
         "noun": "carton / box"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 20,
@@ -344,7 +344,7 @@
       "t_end": 105.0,
       "ego": {
         "verb": "inspect / check",
-        "noun": "other"
+        "noun": "connector"
       },
       "exo": {
         "verb": "idle / walk",
@@ -359,7 +359,7 @@
       "t_end": 110.0,
       "ego": {
         "verb": "inspect / check",
-        "noun": "other"
+        "noun": "sticker / label"
       },
       "exo": {
         "verb": "idle / walk",
@@ -373,15 +373,15 @@
       "t_start": 110.0,
       "t_end": 115.0,
       "ego": {
-        "verb": "inspect / check",
-        "noun": "other"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
         "verb": "idle / walk",
         "noun": "none"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 23,
@@ -392,11 +392,11 @@
         "noun": "screwdriver"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "screwdriver"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 24,
@@ -418,8 +418,8 @@
       "t_start": 125.0,
       "t_end": 130.0,
       "ego": {
-        "verb": "inspect / check",
-        "noun": "other"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "idle / walk",
@@ -433,8 +433,8 @@
       "t_start": 130.0,
       "t_end": 135.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "battery"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "exo": {
         "verb": "idle / walk",
@@ -448,15 +448,15 @@
       "t_start": 135.0,
       "t_end": 140.0,
       "ego": {
-        "verb": "inspect / check",
-        "noun": "other"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
         "verb": "idle / walk",
         "noun": "none"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 28,
@@ -478,22 +478,22 @@
       "t_start": 145.0,
       "t_end": 150.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "detach / remove",
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "idle / walk",
         "noun": "none"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 30,
       "t_start": 150.0,
       "t_end": 155.0,
       "ego": {
-        "verb": "detach / remove",
+        "verb": "attach / fit",
         "noun": "cable tie"
       },
       "exo": {
@@ -512,10 +512,10 @@
         "noun": "cable tie"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "mirror"
+        "verb": "inspect / check",
+        "noun": "other"
       },
-      "verb_agree": true,
+      "verb_agree": false,
       "noun_agree": false
     },
     {
@@ -523,22 +523,7 @@
       "t_start": 160.0,
       "t_end": 165.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "connector"
-      },
-      "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
-      },
-      "verb_agree": true,
-      "noun_agree": false
-    },
-    {
-      "window": 33,
-      "t_start": 165.0,
-      "t_end": 170.0,
-      "ego": {
-        "verb": "detach / remove",
+        "verb": "attach / fit",
         "noun": "cable tie"
       },
       "exo": {
@@ -549,12 +534,27 @@
       "noun_agree": false
     },
     {
+      "window": 33,
+      "t_start": 165.0,
+      "t_end": 170.0,
+      "ego": {
+        "verb": "attach / fit",
+        "noun": "cable tie"
+      },
+      "exo": {
+        "verb": "inspect / check",
+        "noun": "other"
+      },
+      "verb_agree": false,
+      "noun_agree": false
+    },
+    {
       "window": 34,
       "t_start": 170.0,
       "t_end": 175.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "inspect / check",
@@ -568,12 +568,12 @@
       "t_start": 175.0,
       "t_end": 180.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "inspect / check",
-        "noun": "frame / chassis"
+        "noun": "other"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -583,12 +583,12 @@
       "t_start": 180.0,
       "t_end": 185.0,
       "ego": {
-        "verb": "detach / remove",
+        "verb": "attach / fit",
         "noun": "cable tie"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "inspect / check",
+        "noun": "other"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -598,12 +598,12 @@
       "t_start": 185.0,
       "t_end": 190.0,
       "ego": {
-        "verb": "detach / remove",
+        "verb": "attach / fit",
         "noun": "cable tie"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "inspect / check",
+        "noun": "other"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -617,18 +617,18 @@
         "noun": "cable tie"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "detach / remove",
+        "noun": "cable tie"
       },
       "verb_agree": false,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 39,
       "t_start": 195.0,
       "t_end": 200.0,
       "ego": {
-        "verb": "detach / remove",
+        "verb": "attach / fit",
         "noun": "cable tie"
       },
       "exo": {
@@ -648,10 +648,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 41,
@@ -659,14 +659,14 @@
       "t_end": 210.0,
       "ego": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
       "verb_agree": true,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 42,
@@ -677,8 +677,8 @@
         "noun": "connector"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -692,10 +692,10 @@
         "noun": "connector"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "sticker / label"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
-      "verb_agree": false,
+      "verb_agree": true,
       "noun_agree": false
     },
     {
@@ -704,13 +704,13 @@
       "t_end": 225.0,
       "ego": {
         "verb": "connect wire",
-        "noun": "connector"
+        "noun": "wire / harness"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "frame / chassis"
+        "verb": "connect wire",
+        "noun": "connector"
       },
-      "verb_agree": false,
+      "verb_agree": true,
       "noun_agree": false
     },
     {
@@ -722,11 +722,11 @@
         "noun": "wire / harness"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "frame / chassis"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 46,
@@ -738,10 +738,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 47,
@@ -753,10 +753,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 48,
@@ -768,10 +768,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 49,
@@ -783,10 +783,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 50,
@@ -798,10 +798,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 51,
@@ -813,24 +813,24 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "connector"
+        "noun": "wire / harness"
       },
       "verb_agree": false,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 52,
       "t_start": 260.0,
       "t_end": 265.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "wire / harness"
+        "verb": "connect wire",
+        "noun": "connector"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
-      "verb_agree": false,
+      "verb_agree": true,
       "noun_agree": true
     },
     {
@@ -838,8 +838,23 @@
       "t_start": 265.0,
       "t_end": 270.0,
       "ego": {
+        "verb": "connect wire",
+        "noun": "connector"
+      },
+      "exo": {
+        "verb": "connect wire",
+        "noun": "wire / harness"
+      },
+      "verb_agree": true,
+      "noun_agree": false
+    },
+    {
+      "window": 54,
+      "t_start": 270.0,
+      "t_end": 275.0,
+      "ego": {
         "verb": "attach / fit",
-        "noun": "frame / chassis"
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "connect wire",
@@ -849,34 +864,19 @@
       "noun_agree": false
     },
     {
-      "window": 54,
-      "t_start": 270.0,
-      "t_end": 275.0,
-      "ego": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
-      },
-      "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
-      },
-      "verb_agree": true,
-      "noun_agree": true
-    },
-    {
       "window": 55,
       "t_start": 275.0,
       "t_end": 280.0,
       "ego": {
-        "verb": "position / align",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 56,
@@ -888,22 +888,22 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 57,
       "t_start": 285.0,
       "t_end": 290.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "body panel"
+        "verb": "position / align",
+        "noun": "wire / harness"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "inspect / check",
+        "noun": "sticker / label"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -933,10 +933,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "connector"
+        "noun": "wire / harness"
       },
       "verb_agree": false,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 60,
@@ -963,10 +963,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 62,
@@ -978,10 +978,10 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 63,
@@ -1008,30 +1008,15 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 65,
       "t_start": 325.0,
       "t_end": 330.0,
-      "ego": {
-        "verb": "insert",
-        "noun": "wire / harness"
-      },
-      "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
-      },
-      "verb_agree": false,
-      "noun_agree": true
-    },
-    {
-      "window": 66,
-      "t_start": 330.0,
-      "t_end": 335.0,
       "ego": {
         "verb": "insert",
         "noun": "wire / harness"
@@ -1044,34 +1029,49 @@
       "noun_agree": false
     },
     {
+      "window": 66,
+      "t_start": 330.0,
+      "t_end": 335.0,
+      "ego": {
+        "verb": "connect wire",
+        "noun": "connector"
+      },
+      "exo": {
+        "verb": "attach / fit",
+        "noun": "cable tie"
+      },
+      "verb_agree": false,
+      "noun_agree": false
+    },
+    {
       "window": 67,
       "t_start": 335.0,
       "t_end": 340.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "wire / harness"
+        "verb": "insert",
+        "noun": "other"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 68,
       "t_start": 340.0,
       "t_end": 345.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "wire / harness"
+        "verb": "insert",
+        "noun": "other"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 69,
@@ -1079,14 +1079,14 @@
       "t_end": 350.0,
       "ego": {
         "verb": "insert",
-        "noun": "wire / harness"
+        "noun": "other"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 70,
@@ -1108,12 +1108,12 @@
       "t_start": 355.0,
       "t_end": 360.0,
       "ego": {
-        "verb": "position / align",
+        "verb": "connect wire",
         "noun": "wire / harness"
       },
       "exo": {
-        "verb": "inspect / check",
-        "noun": "frame / chassis"
+        "verb": "put down",
+        "noun": "other"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1142,11 +1142,11 @@
         "noun": "none"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "battery"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 74,
@@ -1184,13 +1184,13 @@
       "t_end": 385.0,
       "ego": {
         "verb": "screw / tighten",
-        "noun": "screw / bolt"
+        "noun": "screwdriver"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "cable tie"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
-      "verb_agree": false,
+      "verb_agree": true,
       "noun_agree": false
     },
     {
@@ -1214,14 +1214,14 @@
       "t_end": 395.0,
       "ego": {
         "verb": "screw / tighten",
-        "noun": "screw / bolt"
+        "noun": "screwdriver"
       },
       "exo": {
         "verb": "screw / tighten",
         "noun": "screw / bolt"
       },
       "verb_agree": true,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 79,
@@ -1232,8 +1232,8 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1248,7 +1248,7 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1258,23 +1258,23 @@
       "t_start": 405.0,
       "t_end": 410.0,
       "ego": {
-        "verb": "inspect / check",
-        "noun": "frame / chassis"
+        "verb": "put down",
+        "noun": "screwdriver"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "screwdriver"
       },
       "verb_agree": false,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 82,
       "t_start": 410.0,
       "t_end": 415.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "position / align",
+        "noun": "body panel"
       },
       "exo": {
         "verb": "attach / fit",
@@ -1292,7 +1292,7 @@
         "noun": "none"
       },
       "exo": {
-        "verb": "position / align",
+        "verb": "inspect / check",
         "noun": "frame / chassis"
       },
       "verb_agree": false,
@@ -1334,11 +1334,11 @@
       "t_end": 435.0,
       "ego": {
         "verb": "pick up",
-        "noun": "mirror"
+        "noun": "wrench"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1348,15 +1348,15 @@
       "t_start": 435.0,
       "t_end": 440.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "carton / box"
       },
       "exo": {
         "verb": "idle / walk",
         "noun": "none"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 88,
@@ -1393,12 +1393,12 @@
       "t_start": 450.0,
       "t_end": 455.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
-        "verb": "inspect / check",
-        "noun": "frame / chassis"
+        "verb": "connect wire",
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1409,11 +1409,11 @@
       "t_end": 460.0,
       "ego": {
         "verb": "pick up",
-        "noun": "other"
+        "noun": "mirror"
       },
       "exo": {
         "verb": "attach / fit",
-        "noun": "handlebar"
+        "noun": "body panel"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1423,14 +1423,14 @@
       "t_start": 460.0,
       "t_end": 465.0,
       "ego": {
-        "verb": "inspect / check",
-        "noun": "mirror"
+        "verb": "pick up",
+        "noun": "wrench"
       },
       "exo": {
-        "verb": "position / align",
-        "noun": "handlebar"
+        "verb": "pick up",
+        "noun": "wheel / tyre"
       },
-      "verb_agree": false,
+      "verb_agree": true,
       "noun_agree": false
     },
     {
@@ -1438,15 +1438,15 @@
       "t_start": 465.0,
       "t_end": 470.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "screwdriver"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 94,
@@ -1454,11 +1454,11 @@
       "t_end": 475.0,
       "ego": {
         "verb": "attach / fit",
-        "noun": "sticker / label"
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1487,19 +1487,19 @@
         "noun": "none"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "screwdriver"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 97,
       "t_start": 485.0,
       "t_end": 490.0,
       "ego": {
-        "verb": "screw / tighten",
-        "noun": "screw / bolt"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "idle / walk",
@@ -1517,34 +1517,34 @@
         "noun": "wire / harness"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "insert",
+        "noun": "other"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 99,
       "t_start": 495.0,
       "t_end": 500.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 100,
       "t_start": 500.0,
       "t_end": 505.0,
       "ego": {
-        "verb": "pick up",
-        "noun": "other"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "idle / walk",
@@ -1558,12 +1558,12 @@
       "t_start": 505.0,
       "t_end": 510.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "frame / chassis"
+        "verb": "position / align",
+        "noun": "wheel / tyre"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1574,13 +1574,13 @@
       "t_end": 515.0,
       "ego": {
         "verb": "attach / fit",
-        "noun": "other"
+        "noun": "cable tie"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "frame / chassis"
+        "verb": "position / align",
+        "noun": "wheel / tyre"
       },
-      "verb_agree": true,
+      "verb_agree": false,
       "noun_agree": false
     },
     {
@@ -1592,8 +1592,8 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "inspect / check",
-        "noun": "frame / chassis"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1607,19 +1607,19 @@
         "noun": "none"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "wheel / tyre"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 105,
       "t_start": 525.0,
       "t_end": 530.0,
       "ego": {
-        "verb": "position / align",
-        "noun": "body panel"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
         "verb": "connect wire",
@@ -1637,8 +1637,8 @@
         "noun": "screwdriver"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1648,8 +1648,8 @@
       "t_start": 535.0,
       "t_end": 540.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "wheel / tyre"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
         "verb": "connect wire",
@@ -1663,12 +1663,12 @@
       "t_start": 540.0,
       "t_end": 545.0,
       "ego": {
-        "verb": "position / align",
-        "noun": "body panel"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "connector"
+        "noun": "wire / harness"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1679,7 +1679,7 @@
       "t_end": 550.0,
       "ego": {
         "verb": "position / align",
-        "noun": "body panel"
+        "noun": "wheel / tyre"
       },
       "exo": {
         "verb": "connect wire",
@@ -1708,12 +1708,12 @@
       "t_start": 555.0,
       "t_end": 560.0,
       "ego": {
-        "verb": "screw / tighten",
-        "noun": "screw / bolt"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1738,23 +1738,23 @@
       "t_start": 565.0,
       "t_end": 570.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "connector"
+        "noun": "wire / harness"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 114,
       "t_start": 570.0,
       "t_end": 575.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "sticker / label"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "exo": {
         "verb": "connect wire",
@@ -1773,7 +1773,7 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1783,12 +1783,12 @@
       "t_start": 580.0,
       "t_end": 585.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "inspect / check",
+        "noun": "battery"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1799,13 +1799,13 @@
       "t_end": 590.0,
       "ego": {
         "verb": "position / align",
-        "noun": "body panel"
-      },
-      "exo": {
-        "verb": "position / align",
         "noun": "frame / chassis"
       },
-      "verb_agree": true,
+      "exo": {
+        "verb": "connect wire",
+        "noun": "wire / harness"
+      },
+      "verb_agree": false,
       "noun_agree": false
     },
     {
@@ -1829,10 +1829,10 @@
       "t_end": 600.0,
       "ego": {
         "verb": "pick up",
-        "noun": "wrench"
+        "noun": "screwdriver"
       },
       "exo": {
-        "verb": "attach / fit",
+        "verb": "position / align",
         "noun": "frame / chassis"
       },
       "verb_agree": false,
@@ -1847,8 +1847,8 @@
         "noun": "carton / box"
       },
       "exo": {
-        "verb": "position / align",
-        "noun": "frame / chassis"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1873,42 +1873,42 @@
       "t_start": 610.0,
       "t_end": 615.0,
       "ego": {
-        "verb": "position / align",
-        "noun": "frame / chassis"
+        "verb": "insert",
+        "noun": "battery"
       },
       "exo": {
-        "verb": "position / align",
-        "noun": "frame / chassis"
+        "verb": "connect wire",
+        "noun": "connector"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 123,
       "t_start": 615.0,
       "t_end": 620.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "battery"
+        "verb": "connect wire",
+        "noun": "connector"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 124,
       "t_start": 620.0,
       "t_end": 625.0,
       "ego": {
-        "verb": "attach / fit",
+        "verb": "position / align",
         "noun": "frame / chassis"
       },
       "exo": {
-        "verb": "insert",
-        "noun": "screw / bolt"
+        "verb": "connect wire",
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1922,11 +1922,11 @@
         "noun": "none"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "position / align",
+        "noun": "handlebar"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 126,
@@ -1934,11 +1934,11 @@
       "t_end": 635.0,
       "ego": {
         "verb": "pick up",
-        "noun": "other"
+        "noun": "footboard"
       },
       "exo": {
-        "verb": "position / align",
-        "noun": "handlebar"
+        "verb": "idle / walk",
+        "noun": "none"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -1948,8 +1948,8 @@
       "t_start": 635.0,
       "t_end": 640.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "insert",
+        "noun": "screw / bolt"
       },
       "exo": {
         "verb": "position / align",
@@ -1979,21 +1979,21 @@
       "t_end": 650.0,
       "ego": {
         "verb": "position / align",
-        "noun": "frame / chassis"
+        "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
       "verb_agree": false,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 130,
       "t_start": 650.0,
       "t_end": 655.0,
       "ego": {
-        "verb": "pick up",
+        "verb": "attach / fit",
         "noun": "body panel"
       },
       "exo": {
@@ -2009,7 +2009,7 @@
       "t_end": 660.0,
       "ego": {
         "verb": "position / align",
-        "noun": "wheel / tyre"
+        "noun": "body panel"
       },
       "exo": {
         "verb": "connect wire",
@@ -2023,23 +2023,23 @@
       "t_start": 660.0,
       "t_end": 665.0,
       "ego": {
-        "verb": "position / align",
+        "verb": "connect wire",
         "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
-      "verb_agree": false,
-      "noun_agree": true
+      "verb_agree": true,
+      "noun_agree": false
     },
     {
       "window": 133,
       "t_start": 665.0,
       "t_end": 670.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "body panel"
+        "verb": "insert",
+        "noun": "battery"
       },
       "exo": {
         "verb": "connect wire",
@@ -2053,12 +2053,12 @@
       "t_start": 670.0,
       "t_end": 675.0,
       "ego": {
-        "verb": "position / align",
+        "verb": "detach / remove",
         "noun": "frame / chassis"
       },
       "exo": {
         "verb": "attach / fit",
-        "noun": "screw / bolt"
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2068,12 +2068,12 @@
       "t_start": 675.0,
       "t_end": 680.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "pick up",
+        "noun": "wheel / tyre"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2102,8 +2102,8 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2113,15 +2113,15 @@
       "t_start": 690.0,
       "t_end": 695.0,
       "ego": {
-        "verb": "connect wire",
-        "noun": "connector"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": true,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 139,
@@ -2132,11 +2132,11 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "verb_agree": false,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 140,
@@ -2163,7 +2163,7 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2177,19 +2177,19 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "verb_agree": false,
-      "noun_agree": false
+      "noun_agree": true
     },
     {
       "window": 143,
       "t_start": 715.0,
       "t_end": 720.0,
       "ego": {
-        "verb": "pick up",
-        "noun": "body panel"
+        "verb": "attach / fit",
+        "noun": "other"
       },
       "exo": {
         "verb": "connect wire",
@@ -2207,8 +2207,8 @@
         "noun": "sticker / label"
       },
       "exo": {
-        "verb": "screw / tighten",
-        "noun": "screw / bolt"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2218,15 +2218,15 @@
       "t_start": 725.0,
       "t_end": 730.0,
       "ego": {
-        "verb": "insert",
-        "noun": "wire / harness"
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 146,
@@ -2234,14 +2234,14 @@
       "t_end": 735.0,
       "ego": {
         "verb": "attach / fit",
-        "noun": "wire / harness"
+        "noun": "cable tie"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
       "verb_agree": false,
-      "noun_agree": true
+      "noun_agree": false
     },
     {
       "window": 147,
@@ -2253,7 +2253,7 @@
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2263,15 +2263,15 @@
       "t_start": 740.0,
       "t_end": 745.0,
       "ego": {
-        "verb": "position / align",
-        "noun": "frame / chassis"
-      },
-      "exo": {
-        "verb": "inspect / check",
+        "verb": "connect wire",
         "noun": "wire / harness"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "exo": {
+        "verb": "connect wire",
+        "noun": "wire / harness"
+      },
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 149,
@@ -2282,8 +2282,8 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "cable tie"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2293,7 +2293,7 @@
       "t_start": 750.0,
       "t_end": 755.0,
       "ego": {
-        "verb": "pick up",
+        "verb": "attach / fit",
         "noun": "cable tie"
       },
       "exo": {
@@ -2342,8 +2342,8 @@
         "noun": "none"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2354,7 +2354,7 @@
       "t_end": 775.0,
       "ego": {
         "verb": "pick up",
-        "noun": "sticker / label"
+        "noun": "other"
       },
       "exo": {
         "verb": "connect wire",
@@ -2383,12 +2383,12 @@
       "t_start": 780.0,
       "t_end": 785.0,
       "ego": {
-        "verb": "attach / fit",
+        "verb": "position / align",
         "noun": "frame / chassis"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2398,12 +2398,12 @@
       "t_start": 785.0,
       "t_end": 790.0,
       "ego": {
-        "verb": "inspect / check",
-        "noun": "other"
+        "verb": "position / align",
+        "noun": "frame / chassis"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2414,19 +2414,34 @@
       "t_end": 795.0,
       "ego": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "exo": {
-        "verb": "attach / fit",
-        "noun": "body panel"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
-      "verb_agree": false,
+      "verb_agree": true,
       "noun_agree": false
     },
     {
       "window": 159,
       "t_start": 795.0,
       "t_end": 800.0,
+      "ego": {
+        "verb": "insert",
+        "noun": "screwdriver"
+      },
+      "exo": {
+        "verb": "screw / tighten",
+        "noun": "screw / bolt"
+      },
+      "verb_agree": false,
+      "noun_agree": false
+    },
+    {
+      "window": 160,
+      "t_start": 800.0,
+      "t_end": 805.0,
       "ego": {
         "verb": "insert",
         "noun": "screw / bolt"
@@ -2439,31 +2454,16 @@
       "noun_agree": false
     },
     {
-      "window": 160,
-      "t_start": 800.0,
-      "t_end": 805.0,
-      "ego": {
-        "verb": "insert",
-        "noun": "other"
-      },
-      "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
-      },
-      "verb_agree": false,
-      "noun_agree": false
-    },
-    {
       "window": 161,
       "t_start": 805.0,
       "t_end": 810.0,
       "ego": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "verb_agree": true,
       "noun_agree": true
@@ -2477,8 +2477,8 @@
         "noun": "other"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "attach / fit",
+        "noun": "cable tie"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2492,8 +2492,8 @@
         "noun": "other"
       },
       "exo": {
-        "verb": "inspect / check",
-        "noun": "wire / harness"
+        "verb": "connect wire",
+        "noun": "connector"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2507,7 +2507,7 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
+        "verb": "inspect / check",
         "noun": "wire / harness"
       },
       "verb_agree": false,
@@ -2522,11 +2522,11 @@
         "noun": "wire / harness"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "inspect / check",
+        "noun": "battery"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 166,
@@ -2534,11 +2534,11 @@
       "t_end": 835.0,
       "ego": {
         "verb": "connect wire",
-        "noun": "connector"
+        "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
       "verb_agree": true,
       "noun_agree": false
@@ -2563,27 +2563,27 @@
       "t_start": 840.0,
       "t_end": 845.0,
       "ego": {
-        "verb": "connect wire",
+        "verb": "insert",
         "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
-        "noun": "wire / harness"
+        "noun": "connector"
       },
-      "verb_agree": true,
-      "noun_agree": true
+      "verb_agree": false,
+      "noun_agree": false
     },
     {
       "window": 169,
       "t_start": 845.0,
       "t_end": 850.0,
       "ego": {
-        "verb": "insert",
+        "verb": "screw / tighten",
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
-        "noun": "wire / harness"
+        "verb": "inspect / check",
+        "noun": "frame / chassis"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2608,7 +2608,7 @@
       "t_start": 855.0,
       "t_end": 860.0,
       "ego": {
-        "verb": "connect wire",
+        "verb": "inspect / check",
         "noun": "wire / harness"
       },
       "exo": {
@@ -2623,30 +2623,30 @@
       "t_start": 860.0,
       "t_end": 865.0,
       "ego": {
-        "verb": "inspect / check",
-        "noun": "screw / bolt"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 173,
       "t_start": 865.0,
       "t_end": 870.0,
       "ego": {
-        "verb": "position / align",
-        "noun": "footboard"
+        "verb": "connect wire",
+        "noun": "wire / harness"
       },
       "exo": {
         "verb": "connect wire",
         "noun": "wire / harness"
       },
-      "verb_agree": false,
-      "noun_agree": false
+      "verb_agree": true,
+      "noun_agree": true
     },
     {
       "window": 174,
@@ -2658,7 +2658,7 @@
       },
       "exo": {
         "verb": "attach / fit",
-        "noun": "battery"
+        "noun": "footboard"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2672,8 +2672,8 @@
         "noun": "wire / harness"
       },
       "exo": {
-        "verb": "idle / walk",
-        "noun": "none"
+        "verb": "put down",
+        "noun": "screwdriver"
       },
       "verb_agree": false,
       "noun_agree": false
@@ -2698,8 +2698,8 @@
       "t_start": 885.0,
       "t_end": 890.0,
       "ego": {
-        "verb": "attach / fit",
-        "noun": "frame / chassis"
+        "verb": "insert",
+        "noun": "battery"
       },
       "exo": {
         "verb": "connect wire",
@@ -2717,7 +2717,7 @@
         "noun": "screw / bolt"
       },
       "exo": {
-        "verb": "connect wire",
+        "verb": "insert",
         "noun": "wire / harness"
       },
       "verb_agree": false,

@@ -86,6 +86,32 @@ def main() -> int:
     ratio = fe / max(fx, 1)
     print(f"\n  ego reports fine manipulation {ratio:.1f}x as often as exo.")
 
+    # ---- OBJECT SCALE -----------------------------------------------------
+    # Which objects does each view name? If exo names large assemblies and ego
+    # names hand-scale parts and tools, the two views are reporting different
+    # levels of the same activity rather than disagreeing about one level.
+    LARGE = {"frame / chassis", "body panel", "seat", "wheel / tyre",
+             "footboard", "carton / box", "handlebar"}
+    SMALL = {"screw / bolt", "screwdriver", "wrench", "connector",
+             "cable tie", "sticker / label", "wire / harness", "mirror"}
+
+    print("\n" + "=" * 70)
+    print("OBJECT SCALE — which things does each view actually name?")
+    print("=" * 70)
+    scale = {}
+    print(f"  {'view':<8}{'large assemblies':>18}{'hand-scale parts':>18}{'ratio':>10}")
+    print("  " + "-" * 54)
+    for view in ("ego", "exo"):
+        c = collections.Counter(r[view]["noun"] for r in rows if r[view]["noun"])
+        lg = sum(c.get(x, 0) for x in LARGE)
+        sm = sum(c.get(x, 0) for x in SMALL)
+        scale[view] = {"large": lg, "small": sm,
+                       "small_share": sm / max(lg + sm, 1)}
+        print(f"  {view:<8}{lg:>18}{sm:>18}{sm/max(lg,1):>10.2f}")
+    es, xs = scale["ego"]["small_share"], scale["exo"]["small_share"]
+    print(f"\n  share of named objects that are hand-scale:")
+    print(f"    ego {es:.0%}   exo {xs:.0%}   difference {es-xs:+.0%}")
+
     print("\n" + "=" * 70)
     print("READING")
     print("=" * 70)
@@ -106,6 +132,7 @@ def main() -> int:
         "n_windows": n, "per_view": stats,
         "verb_entropy_gain_ego_over_exo": de,
         "fine_verb_ratio_ego_over_exo": ratio,
+        "object_scale": scale,
         "fine_verbs": FINE_VERBS,
     }, indent=2))
     print(f"\nwrote {OUT}")

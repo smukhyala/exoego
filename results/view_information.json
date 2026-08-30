@@ -22,6 +22,18 @@
   },
   "verb_entropy_gain_ego_over_exo": 1.0921007879818572,
   "fine_verb_ratio_ego_over_exo": 8.5,
+  "object_scale": {
+    "ego": {
+      "large": 26,
+      "small": 112,
+      "small_share": 0.8115942028985508
+    },
+    "exo": {
+      "large": 20,
+      "small": 122,
+      "small_share": 0.8591549295774648
+    }
+  },
   "fine_verbs": [
     "pick up",
     "insert",

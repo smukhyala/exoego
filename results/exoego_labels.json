@@ -1,6 +1,6 @@
 {
   "source": "world_context_ego_exo_pair",
-  "labeller": "auto:gemini-3.7-flash",
+  "labeller": "auto:gemini-3.5-flash",
   "selection": "kept only windows where ego-only and exo-only passes agreed",
   "window_s": 5.0,
   "offset_s": 11.16,
@@ -39,27 +39,19 @@
   "n_windows": 179,
   "labels": [
     {
-      "window": 0,
-      "t_start": 0.0,
-      "t_end": 5.0,
-      "verb": "idle / walk",
-      "noun": "none",
-      "unclear": false
-    },
-    {
-      "window": 1,
-      "t_start": 5.0,
-      "t_end": 10.0,
-      "verb": "idle / walk",
-      "noun": "none",
-      "unclear": false
-    },
-    {
       "window": 2,
       "t_start": 10.0,
       "t_end": 15.0,
       "verb": "connect wire",
       "noun": "wire / harness",
+      "unclear": false
+    },
+    {
+      "window": 4,
+      "t_start": 20.0,
+      "t_end": 25.0,
+      "verb": "idle / walk",
+      "noun": "none",
       "unclear": false
     },
     {
@@ -71,35 +63,11 @@
       "unclear": false
     },
     {
-      "window": 6,
-      "t_start": 30.0,
-      "t_end": 35.0,
-      "verb": "idle / walk",
-      "noun": "none",
-      "unclear": false
-    },
-    {
       "window": 10,
       "t_start": 50.0,
       "t_end": 55.0,
       "verb": "connect wire",
-      "noun": "wire / harness",
-      "unclear": false
-    },
-    {
-      "window": 11,
-      "t_start": 55.0,
-      "t_end": 60.0,
-      "verb": "connect wire",
-      "noun": "wire / harness",
-      "unclear": false
-    },
-    {
-      "window": 13,
-      "t_start": 65.0,
-      "t_end": 70.0,
-      "verb": "connect wire",
-      "noun": "wire / harness",
+      "noun": "connector",
       "unclear": false
     },
     {
@@ -111,11 +79,35 @@
       "unclear": false
     },
     {
-      "window": 16,
-      "t_start": 80.0,
-      "t_end": 85.0,
+      "window": 15,
+      "t_start": 75.0,
+      "t_end": 80.0,
       "verb": "connect wire",
-      "noun": "wire / harness",
+      "noun": "connector",
+      "unclear": false
+    },
+    {
+      "window": 22,
+      "t_start": 110.0,
+      "t_end": 115.0,
+      "verb": "idle / walk",
+      "noun": "none",
+      "unclear": false
+    },
+    {
+      "window": 23,
+      "t_start": 115.0,
+      "t_end": 120.0,
+      "verb": "pick up",
+      "noun": "screwdriver",
+      "unclear": false
+    },
+    {
+      "window": 27,
+      "t_start": 135.0,
+      "t_end": 140.0,
+      "verb": "idle / walk",
+      "noun": "none",
       "unclear": false
     },
     {
@@ -127,65 +119,41 @@
       "unclear": false
     },
     {
-      "window": 29,
-      "t_start": 145.0,
-      "t_end": 150.0,
-      "verb": "idle / walk",
-      "noun": "none",
+      "window": 40,
+      "t_start": 200.0,
+      "t_end": 205.0,
+      "verb": "connect wire",
+      "noun": "connector",
       "unclear": false
     },
     {
-      "window": 41,
-      "t_start": 205.0,
-      "t_end": 210.0,
+      "window": 45,
+      "t_start": 225.0,
+      "t_end": 230.0,
       "verb": "connect wire",
       "noun": "wire / harness",
       "unclear": false
     },
     {
-      "window": 47,
-      "t_start": 235.0,
-      "t_end": 240.0,
+      "window": 46,
+      "t_start": 230.0,
+      "t_end": 235.0,
       "verb": "connect wire",
-      "noun": "wire / harness",
+      "noun": "connector",
       "unclear": false
     },
     {
-      "window": 54,
-      "t_start": 270.0,
-      "t_end": 275.0,
+      "window": 52,
+      "t_start": 260.0,
+      "t_end": 265.0,
       "verb": "connect wire",
-      "noun": "wire / harness",
-      "unclear": false
-    },
-    {
-      "window": 56,
-      "t_start": 280.0,
-      "t_end": 285.0,
-      "verb": "connect wire",
-      "noun": "wire / harness",
-      "unclear": false
-    },
-    {
-      "window": 73,
-      "t_start": 365.0,
-      "t_end": 370.0,
-      "verb": "idle / walk",
-      "noun": "none",
+      "noun": "connector",
       "unclear": false
     },
     {
       "window": 75,
       "t_start": 375.0,
       "t_end": 380.0,
-      "verb": "screw / tighten",
-      "noun": "screw / bolt",
-      "unclear": false
-    },
-    {
-      "window": 78,
-      "t_start": 390.0,
-      "t_end": 395.0,
       "verb": "screw / tighten",
       "noun": "screw / bolt",
       "unclear": false
@@ -199,51 +167,11 @@
       "unclear": false
     },
     {
-      "window": 87,
-      "t_start": 435.0,
-      "t_end": 440.0,
-      "verb": "idle / walk",
-      "noun": "none",
-      "unclear": false
-    },
-    {
-      "window": 93,
-      "t_start": 465.0,
-      "t_end": 470.0,
-      "verb": "idle / walk",
-      "noun": "none",
-      "unclear": false
-    },
-    {
-      "window": 96,
-      "t_start": 480.0,
-      "t_end": 485.0,
-      "verb": "idle / walk",
-      "noun": "none",
-      "unclear": false
-    },
-    {
-      "window": 98,
-      "t_start": 490.0,
-      "t_end": 495.0,
+      "window": 113,
+      "t_start": 565.0,
+      "t_end": 570.0,
       "verb": "connect wire",
       "noun": "wire / harness",
-      "unclear": false
-    },
-    {
-      "window": 99,
-      "t_start": 495.0,
-      "t_end": 500.0,
-      "verb": "connect wire",
-      "noun": "wire / harness",
-      "unclear": false
-    },
-    {
-      "window": 104,
-      "t_start": 520.0,
-      "t_end": 525.0,
-      "verb": "idle / walk",
-      "noun": "none",
       "unclear": false
     },
     {
@@ -255,19 +183,11 @@
       "unclear": false
     },
     {
-      "window": 122,
-      "t_start": 610.0,
-      "t_end": 615.0,
-      "verb": "position / align",
-      "noun": "frame / chassis",
-      "unclear": false
-    },
-    {
-      "window": 125,
-      "t_start": 625.0,
-      "t_end": 630.0,
-      "verb": "idle / walk",
-      "noun": "none",
+      "window": 123,
+      "t_start": 615.0,
+      "t_end": 620.0,
+      "verb": "connect wire",
+      "noun": "connector",
       "unclear": false
     },
     {
@@ -279,17 +199,25 @@
       "unclear": false
     },
     {
-      "window": 161,
-      "t_start": 805.0,
-      "t_end": 810.0,
-      "verb": "idle / walk",
-      "noun": "none",
+      "window": 138,
+      "t_start": 690.0,
+      "t_end": 695.0,
+      "verb": "attach / fit",
+      "noun": "cable tie",
       "unclear": false
     },
     {
-      "window": 165,
-      "t_start": 825.0,
-      "t_end": 830.0,
+      "window": 148,
+      "t_start": 740.0,
+      "t_end": 745.0,
+      "verb": "connect wire",
+      "noun": "wire / harness",
+      "unclear": false
+    },
+    {
+      "window": 161,
+      "t_start": 805.0,
+      "t_end": 810.0,
       "verb": "connect wire",
       "noun": "wire / harness",
       "unclear": false
@@ -303,17 +231,25 @@
       "unclear": false
     },
     {
-      "window": 168,
-      "t_start": 840.0,
-      "t_end": 845.0,
+      "window": 170,
+      "t_start": 850.0,
+      "t_end": 855.0,
       "verb": "connect wire",
       "noun": "wire / harness",
       "unclear": false
     },
     {
-      "window": 170,
-      "t_start": 850.0,
-      "t_end": 855.0,
+      "window": 172,
+      "t_start": 860.0,
+      "t_end": 865.0,
+      "verb": "connect wire",
+      "noun": "wire / harness",
+      "unclear": false
+    },
+    {
+      "window": 173,
+      "t_start": 865.0,
+      "t_end": 870.0,
       "verb": "connect wire",
       "noun": "wire / harness",
       "unclear": false
