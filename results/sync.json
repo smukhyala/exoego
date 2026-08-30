@@ -1,0 +1,15 @@
+{
+  "method": "spectral_flux_onset_xcorr",
+  "offset_s_exo_of_ego_t0": 11.16,
+  "peak": 0.13549993393708054,
+  "peak_over_p999": 3.550564891365275,
+  "overlap_s": 898.792,
+  "trustworthy": true,
+  "top5_s": [
+    11.16,
+    11.15,
+    786.77,
+    790.19,
+    11.17
+  ]
+}

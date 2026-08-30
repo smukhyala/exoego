@@ -1,255 +1,124 @@
 # ExoEgo
 
-**Exo video teaches a model the metric scale that ego video cannot see.
-That lets ego-only factory footage drive a real arm.**
+**Analysis of paired egocentric / exocentric industrial video from World Context.**
 
-Hackathon build: OpenArm v1 + the World Context industrial egocentric dataset,
-with AssemblyHands supplying the paired ego/exo supervision that World Context lacks.
-
----
-
-## The problem, stated precisely
-
-We were given 424 clips of industrial egocentric video with IMU sidecars. Its own
-data card says the thing that decides this project:
-
-> camera-to-IMU translation, rolling shutter, accelerometer bias and **metric scale
-> were not calibrated**
-
-Ego video gives you rotation. It does not give you metric depth. A hand trajectory
-recovered from a single head-mounted camera is correct in shape and wrong in size,
-and an arm driven by it reaches to the wrong place.
-
-Third-person (exo) video supplies exactly the missing quantity, because two or more
-views of the same hand triangulate to a metric position.
-
-So the claim is not the vague "more cameras help." It is specific and falsifiable:
-
-> **A model that learns metric scale from exo supervision recovers 3D hand
-> trajectories from ego-only video more accurately than a monocular ego baseline —
-> accurately enough to drive a physical arm.**
-
-## Why AssemblyHands
-
-World Context is ego-only, so it cannot supply the supervision. AssemblyHands can:
-
-| | |
-|---|---|
-| Rig | 4 egocentric mono cameras (636×480) + 8 static exocentric RGB (1920×1080) |
-| Ground truth | 3D hand keypoints in world coordinates, millimetres, 42 joints |
-| Calibration | per-frame ego extrinsics; static exo extrinsics; rectified intrinsics |
-| Domain | bench-top assembly and disassembly — the same posture as our target tasks |
-| Access | public Google Drive, no approval gate, CC BY-NC 4.0 |
-
-The domains line up better than expected. AssemblyHands ego cameras are wide-angle
-mono; normalized focal length is 192/636 ≈ 0.30 against World Context's 635/1920 ≈ 0.33.
-Comparable field of view, which is what matters for transfer.
-
-**The ego cameras are monochrome.** World Context is colour. Convert World Context
-frames to greyscale before inference or the model quietly degrades.
+World Context supplied a synchronized ego/exo pair from a scooter assembly floor.
+This repo recovers the synchronization, then measures what the exocentric view
+provides that the egocentric view cannot.
 
 ---
 
-## The key shortcut: the ground truth *is* the exo signal
+## The pair
 
-AssemblyHands' 3D annotations were produced automatically from the 8 static exo
-cameras. So we do not need to download 50 GB of exo video to have an exo signal —
-**the provided 3D ground truth already is the exo-derived measurement.**
-
-This collapses the critical path enormously:
-
-- exo branch = the shipped 3D ground truth (already downloaded, 2.2 GB)
-- ego branch = what we estimate from a single ego image
-- the comparison between them = the entire T1 result
-
-Exo videos become optional, wanted only for a visual demo of the triangulation.
-Do not put them on the critical path.
-
----
-
-## Pipeline
-
-```
-AssemblyHands                          World Context                OpenArm v1
-─────────────                          ─────────────                ──────────
-ego image (mono, 636×480)              ego clip (fisheye 1080p)
-   │                                      │
-   │  MediaPipe → 2D hand                 │  undistort (Kannala-Brandt)
-   ▼                                      │  → greyscale → MediaPipe
-[ ego-only 3D ]  scale-ambiguous          ▼
-   │                                   [ 2D hand + IMU orientation ]
-   │  ◀── supervised by ───┐              │
-   ▼                       │              ▼
-[ distillation head ]      │           [ metric 3D trajectory ]  ── retarget ──▶ arm
-   ego features → metric   │              │                                      │
-   scale correction        │              │                                      ▼
-   │                       │              │                                  A/B trials
-   ▼                       │              │                              raw-ego vs distilled
-[ metric 3D ] ─── error ───┘              │
-                    ▲                     │
-        3D GT = exo-triangulated ─────────┘
-```
-
-Left half proves the claim. Right half puts it on hardware.
-
----
-
-## Stages
-
-### Stage 0 — Validate the geometry ✅ DONE
-
-`python -m src.g1_check`
-
-Three checks that need no images:
-
-- **A. Ego reprojection.** Project world 3D through per-frame ego extrinsics and
-  rectified intrinsics, compare against annotated 2D. Result: **median 0.000 px**
-  over 400 frames / 8,734 joints.
-- **B. Exo round-trip.** Project 3D into the 8 exo views, triangulate back.
-  Result: **median 0.000 mm**, every joint visible in all 8 views.
-- **C. Rig geometry.** Exo baselines 589–1956 mm — well conditioned for triangulation.
-
-**Read A honestly.** Zero error means the annotated 2D *is* a reprojection of the 3D
-through these parameters. It proves our camera conventions, units and frame indexing
-are right. It does **not** independently prove the 3D sits on real hands in the pixels.
-That check is Stage 1.
-
-### Stage 0b — What each rig can achieve, before any model ✅ DONE
-
-`python -m src.rig_analysis`
-
-A noise-propagation study on the real calibration. It asks what 3D accuracy each
-rig can achieve *at best*, given realistic 2D detection error — an upper bound no
-detector or network can beat.
-
-Median 3D error in mm, by 2D detection noise:
-
-| condition | σ=0px | σ=1px | σ=2px | σ=4px |
-|---|---|---|---|---|
-| monocular ego, one global depth | 205.7 | 205.6 | **205.9** | 206.1 |
-| 4 headset ego cams (74–152 mm baseline) | 0.00 | 2.48 | 5.14 | 11.15 |
-| 8 static exo cams (589–1956 mm baseline) | 0.00 | 0.57 | **1.12** | 2.28 |
-| all 12 | 0.00 | 0.54 | 1.07 | 2.16 |
-
-**The monocular row is the whole argument.** It is flat. Going from 0 to 4 px of
-detection noise moves it by 0.4 mm, because its error is not detection error — it
-is scale ambiguity. *You cannot fix a monocular rig with a better hand detector.*
-
-Because "one global depth for 42 joints across two hands" is a deliberately crude
-baseline, we also swept the realistic monocular failure: relative pose oracle-perfect,
-only absolute root depth wrong.
-
-| root-depth error | 0% | 2% | 5% | 10% | 20% |
-|---|---|---|---|---|---|
-| median 3D error | 2.1 mm | 9.1 mm | 22.2 mm | **44.4 mm** | 88.9 mm |
-
-Hands sit a median **442 mm** from the ego camera, so error tracks depth error almost
-exactly. A monocular method at a realistic 10–20% depth error lands at 44–89 mm against
-exo's 1.1 mm. For an arm reaching for a bottle, 44 mm is a miss.
-
-> Note on distance: these ego cameras are ~134° FOV and the hands sit well off-axis,
-> so optical-axis depth (132 mm) is roughly 3× smaller than true euclidean distance
-> (442 mm). Report the latter.
-
-### Stage 1 — Ego images and visual confirmation
-
-- Check the size of the `val` split before pulling anything. Val only. Not train (490K images).
-- Overlay projected 3D onto real ego frames. **This is the real G1.** If the skeleton
-  does not land on the hands, stop — everything downstream is built on sand.
-- Build the paired sample index: `(ego image, 2D keypoints, 3D world GT, camera params)`.
-
-### Stage 2 — Ego-only baseline (the thing to beat)
-
-MediaPipe on the ego image gives 2D landmarks plus a root-relative 2.5D estimate with
-**no metric scale**. Two honest baselines:
-
-- **B0 — arbitrary scale.** Take the monocular estimate as-is. Expect large error.
-- **B1 — oracle scale.** Fit the single best global scale per sequence, in hindsight.
-  This is deliberately generous: it is the best a monocular method could do if someone
-  handed it the right scale. Beating B1 is the real result.
-
-Metric: **MPJPE in mm**, root-aligned, plus wrist-trajectory error, which is what the
-arm actually consumes.
-
-### Stage 3 — Exo-supervised distillation
-
-Small head: ego features → metric scale/depth correction, supervised by the
-exo-derived 3D GT. Frozen visual features, cached once. Trains in minutes on the M4 Max.
-
-Report **error vs number of training sequences** — a sample-efficiency curve, not a
-single number. Three lines: B0, B1, distilled.
-
-### Stage 4 — Transfer to World Context
-
-- Filter to `calibration_status == "intrinsics_and_gyro"` (200 of 424 clips).
-- Undistort with the Kannala-Brandt fisheye intrinsics → convert to **greyscale**.
-- IMU: subtract bias (**bias is dps, samples are rad/s — convert**), apply the
-  gyro→camera matrix `M`, apply `time_offset_ms`, integrate to orientation.
-  *Never apply the GPMF ORIN remap first.*
-- Compensate head rotation out of the hand trajectory. Run the distilled model.
-- **Gate G3:** hand detected in ≥30% of frames, or switch task.
-
-### Stage 5 — Retarget to OpenArm
-
-- Normalize the metric 3D wrist trajectory into the arm's workspace box.
-- IK against the OpenArm URDF (ikpy/pinocchio); fallback is reduced-DoF direct mapping.
-- Rate-limit, clamp to soft limits, plot before anything touches hardware.
-
-### Stage 6 — The hardware A/B
-
-Same task, same framing, N trials each:
-
-- arm driven by the **raw ego** trajectory
-- arm driven by the **exo-distilled** trajectory
-
-Count successes. This is the thesis, demonstrated physically rather than tabulated.
-
----
-
-## Task choice
-
-`bottle-surface-buffing` — planar, repetitive, one grasp, no regrasping. It minimises
-gripper actuation, which minimises the chance of damaging the third-party grippers.
-
-Backup: `component-alignment-sticker-application`.
-Avoid `garment-folding-*` — deformables are the hardest thing in manipulation.
-
-## Robot safety
-
-Current limit **before** any position command, every time.
-
-- Set torque/current to ~15% of rated, then verify it clamps by stalling a joint by hand.
-  If it does not stall, the limit is not applied.
-- Discover gripper range by slow current-limited closing until current rises — never by
-  commanding endpoints. Soft limits at 90% of the discovered range.
-- Watchdog on sustained current. E-stop reachable at all times.
-
----
-
-## Result tiers
-
-| Tier | Result | Robot? |
+| | ego | exo |
 |---|---|---|
-| **T1** | mm-error table + sample-efficiency curve, ego-only vs exo-distilled | No |
-| **T2** | OpenArm executes a World Context-derived trajectory | Yes |
-| **T3** | Hardware A/B, raw-ego vs exo-distilled, N trials | Yes |
+| file | `GX014991-ego-C2920.MP4` | `GX010104-exo-C7459.MP4` |
+| mount | head-worn | ceiling, looking down |
+| duration | 1129.7 s | 910.0 s |
+| video | 1920x1080 HEVC 29.97 fps | 1920x1080 HEVC 29.97 fps |
+| audio | present | present |
+| telemetry | GPMF `bin_data`, 1129 pkts | GPMF `bin_data`, 910 pkts |
 
-T1 is the floor and stands alone. Protect it first.
+Two things here are **not** in the packaged 424-clip release: **audio**, and
+**GPMF telemetry on both cameras**. The release stripped audio and shipped IMU
+for ego only. Both matter — audio is what made synchronization possible.
+
+## Stage 1 — Synchronization ✅
+
+`python -m src.sync_audio`
+
+The cameras were started ~11 s apart, so nothing else is possible until the
+offset is known.
+
+**First attempt failed.** Correlating log-RMS energy envelopes gave a peak of
+0.195 that sat *below* the 99.9th percentile of the correlogram — no peak at all.
+The reason is the room: a workshop is dominated by continuous broadband noise
+(compressors, fans) that swamps an energy envelope and carries no timing
+information.
+
+**What worked** was a spectral-flux onset envelope, which discards steady-state
+energy and keeps transients — tool strikes, dropped parts — which is what the two
+microphones genuinely share.
+
+```
+offset          +11.16 s   (ego t=0 -> exo t=11.16)
+peak            0.1355     3.55x the 99.9th percentile
+top candidates  11.15 / 11.16 / 11.17 s   (adjacent lags, +-10 ms)
+overlap         898.8 s = 15.0 min = 26,937 frame pairs
+```
+
+Confirmed visually: at the aligned timestamps both views show the same grey
+battery panel being fitted, the same worker in a red plaid shirt, and the ego
+wearer's own "apollo" shirt matches the person seen from overhead.
+
+## Stage 2 — What exo provides ✅
+
+`python -m src.exo_analysis`
+
+### Camera instability — the mechanism
+
+Mean frame-to-frame pixel change (0-255), 2 fps:
+
+| | median | p90 |
+|---|---|---|
+| ego | 44.02 | 58.45 |
+| exo | 6.43 | 12.45 |
+
+**The ego view changes 6.85x as much between frames.** The exo camera is bolted
+to the ceiling; the ego camera rides a head that turns to talk, fetch parts and
+check other work. That instability is *why* the ego view keeps losing the task,
+and it is measured without any semantics, so no detector bias can touch it.
+
+### Motion blur
+
+| | median | p10 |
+|---|---|---|
+| ego | 1977.3 | 1347.1 |
+| exo | 2161.3 | 2037.9 |
+
+**57.3%** of ego frames are blurrier than the exo camera's 10th percentile.
+
+### What we could NOT show, and why
+
+A first pass asked YOLO "can you see the scooter" per view and reported exo at
+2.0% against ego's 19.9%. **That was an artifact and it is retracted.** A
+COCO-trained detector has never seen a partly-assembled scooter from directly
+overhead: it scores the work object at 0.08-0.22 confidence in the exo view and
+0.53-0.75 in ego. The same bias suppressed exo person counts.
+
+Sweeping the threshold rather than picking one shows person visibility is
+threshold-dependent and inconclusive:
+
+| conf | ego mean | exo mean | exo/ego |
+|---|---|---|---|
+| 0.05 | 5.84 | 4.52 | 0.77 |
+| 0.20 | 2.25 | 1.98 | 0.88 |
+| 0.50 | 1.12 | 0.88 | 0.79 |
+
+The ratio stays below 1 at every threshold, but overhead people are out of
+distribution for this detector, so this does **not** establish that ego sees more
+people. It establishes that **off-the-shelf semantic detectors are not comparable
+across viewpoints** — which is itself a real finding for anyone building ego/exo
+benchmarks.
+
+**Methodological rule this yields:** never compare two viewpoints at a single
+detector confidence threshold. Sweep it, or use view-agnostic measures.
 
 ## Layout
 
 ```
-src/calib.py        camera models, projection, triangulation
-src/g1_check.py     Stage 0 geometry validation
-data/assemblyhands/annotations/    2.2 GB, downloaded
-third_party/assemblyhands-toolkit/ upstream loaders + bundled nimble calib
-CHECKLIST.md        hour-by-hour run sheet with hard gates
+src/sync_audio.py     onset-based ego/exo synchronization
+src/exo_analysis.py   view-agnostic comparison + threshold sweep
+src/exo_coverage.py   first-pass semantic analysis (superseded; kept for the record)
+src/calib.py          camera models, projection, triangulation
+src/rig_analysis.py   AssemblyHands rig noise-propagation study
+results/              sync.json, exo_analysis.json, rig_analysis.json
 ```
 
-Run sheet: https://claude.ai/code/artifact/16040e8b-79f9-4f4f-b6db-50dbbc6d117a
+## Earlier work, still valid
 
-## Sources
-
-- [AssemblyHands](https://assemblyhands.github.io/) · [toolkit](https://github.com/facebookresearch/assemblyhands-toolkit) · [Assembly101](https://arxiv.org/pdf/2203.14712)
-- [Ego-Exo4D](https://docs.ego-exo4d-data.org/getting-started/) — applied, ~48 h approval, not on the critical path
-- AssemblyHands is CC BY-NC 4.0. Non-commercial.
+`python -m src.rig_analysis` — on AssemblyHands calibration, an upper bound on
+what each rig can achieve given realistic 2D detection error. Monocular ego error
+is **flat** across detection noise (205.7 mm at 0 px, 206.1 mm at 4 px) because
+the error is scale ambiguity, not detection quality: *you cannot fix a monocular
+rig with a better hand detector.* An 8-camera exo rig reaches 1.1 mm.

@@ -1,0 +1,44 @@
+{
+  "n_pairs": 1796,
+  "fps": 2.0,
+  "offset_s": 11.16,
+  "instability_median_ego": 44.020328521728516,
+  "instability_median_exo": 6.426961898803711,
+  "instability_ratio": 6.849321532452571,
+  "blur_median_ego": 1977.2839905645676,
+  "blur_median_exo": 2161.263028529942,
+  "ego_blurrier_than_exo_p10": 0.5734966592427617,
+  "person_sweep": {
+    "0.05": {
+      "ego_mean": 5.844654788418708,
+      "exo_mean": 4.516146993318485,
+      "ratio": 0.7726969610364866,
+      "exo_gt_ego": 0.2951002227171492
+    },
+    "0.1": {
+      "ego_mean": 3.598552338530067,
+      "exo_mean": 3.0334075723830733,
+      "ratio": 0.8429521893857341,
+      "exo_gt_ego": 0.2962138084632517
+    },
+    "0.2": {
+      "ego_mean": 2.2466592427616927,
+      "exo_mean": 1.982182628062361,
+      "ratio": 0.8822800495662949,
+      "exo_gt_ego": 0.2750556792873051
+    },
+    "0.35": {
+      "ego_mean": 1.5289532293986636,
+      "exo_mean": 1.3184855233853006,
+      "ratio": 0.8623452294246176,
+      "exo_gt_ego": 0.2639198218262806
+    },
+    "0.5": {
+      "ego_mean": 1.116369710467706,
+      "exo_mean": 0.8841870824053452,
+      "ratio": 0.7920199501246883,
+      "exo_gt_ego": 0.2383073496659243
+    }
+  },
+  "note": "First-pass work-object result was a COCO domain artifact; see docstring."
+}

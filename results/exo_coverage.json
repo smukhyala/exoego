@@ -1,0 +1,17 @@
+{
+  "n_pairs": 1796,
+  "fps": 2.0,
+  "offset_s": 11.16,
+  "ego_sees_work": 0.19933184855233854,
+  "exo_sees_work": 0.0200445434298441,
+  "ego_loses_work": 0.8006681514476615,
+  "exo_recovery_given_ego_lost": 0.02086230876216968,
+  "exo_only": 0.01670378619153675,
+  "ego_only": 0.19599109131403117,
+  "persons_mean_ego": 1.5289532293986636,
+  "persons_mean_exo": 1.3184855233853006,
+  "exo_more_people_frac": 0.2639198218262806,
+  "blur_median_ego": 798.1418321011672,
+  "blur_median_exo": 872.8558086734347,
+  "ego_blurrier_than_exo_p10": 0.5662583518930958
+}
