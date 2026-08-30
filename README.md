@@ -269,6 +269,39 @@ below the gate is seed noise, not evidence.
 
 ---
 
+## Stage 4 — Can pairing bridge what a robot watches to what an actor sees? ✅
+
+`python -m src.paired_bridge`
+
+This is the fastest direct proxy for the deployment claim that the existing cache can
+support. A ridge bridge learns **exo → ego representation transfer from synchronized,
+unlabelled pairs**. A coarse-action head is trained only on ego labels, frozen, and then
+evaluated on exo video from the official held-out test recordings.
+
+The control has identical inputs and model capacity, but shifts exo segments within each
+training recording so that the two views no longer show the same moment. This preserves
+the worker, toy, room, and camera distributions while removing simultaneity.
+
+| Test input to the same ego-trained head | Top-1 | Mean-per-class |
+|---|---:|---:|
+| raw exo | 8.0% | 2.3% |
+| time-shifted-pair control | 3.1% | 1.3% |
+| **synchronized-pair bridge** | **14.2%** | **4.2%** |
+| ego same-view reference | 9.0% | 5.3% |
+| majority-class baseline | 5.5% | 0.7% |
+
+The paired bridge improves top-1 by **+6.2 points** over raw exo. A paired bootstrap over
+68 held-out recordings gives a 95% interval of **+4.2 to +8.3 points**. The head and bridge
+hyperparameters are selected on validation before the test split is read; exo action
+labels are never used to train or select the ego head.
+
+This is evidence for a necessary component, not the whole one-shot-robotics claim. The
+cached TSM features were already supervised for Assembly101 action recognition. The result
+isolates the value of synchronized pairing for cross-view transfer; the next honest step is
+to repeat it with a raw-video self-supervised world model and then evaluate task execution.
+
+---
+
 ## Layout
 
 ```
@@ -280,6 +313,7 @@ World Context / AssemblyHands analysis
   src/rig_analysis.py     AssemblyHands rig noise-propagation study
   src/view_gap.py         viewpoint label-efficiency gap
   src/pretrain_ablation.py  ego+exo pretraining ablation
+  src/paired_bridge.py    held-out synchronized-pair transfer experiment
   src/auto_label.py       per-view auto-labelling + self-agreement control
   annotate/               ego/exo annotation tool (serve.py provides Range support)
   results/                *.json

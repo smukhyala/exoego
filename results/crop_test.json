@@ -1,0 +1,31 @@
+{
+  "model": "gemini-3.7-flash",
+  "n_windows": 179,
+  "views": {
+    "ego (head-worn)": {
+      "entropy": 2.9674916976793493,
+      "classes": 10,
+      "top_share": 0.2122905027932961,
+      "fine": 73,
+      "n": 179
+    },
+    "exo (ceiling, full frame)": {
+      "entropy": 2.297378879459031,
+      "classes": 10,
+      "top_share": 0.5307262569832403,
+      "fine": 21,
+      "n": 179
+    },
+    "exo (cropped to work area)": {
+      "entropy": 2.1896269565544144,
+      "classes": 10,
+      "top_share": 0.5139664804469274,
+      "fine": 17,
+      "n": 179
+    }
+  },
+  "entropy_gap_ego_minus_exo": 0.6701128182203182,
+  "recovered_by_crop_bits": -0.10775192290461666,
+  "recovered_fraction": -0.1607966897138061,
+  "crop": "x 0.12-0.80, y 0.15-0.80 of the original 1920x1080"
+}

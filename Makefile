@@ -1,7 +1,7 @@
 VENV ?= .venv
 PY   ?= $(VENV)/bin/python
 
-.PHONY: help setup external find download clips features train results test pipeline clean-results
+.PHONY: help setup external find download clips features train results bridge test pipeline clean-results
 
 help:
 	@grep -E '^[a-z-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -36,6 +36,9 @@ train: ## sweep configs x label budgets x seeds
 
 results: ## aggregate into the label-efficiency curve
 	$(PY) scripts/06_report.py
+
+bridge: ## test an unlabelled paired exo-to-ego representation bridge
+	$(PY) -m src.paired_bridge
 
 ui: ## render the interactive label-efficiency page from the results
 	$(PY) scripts/07_build_ui.py

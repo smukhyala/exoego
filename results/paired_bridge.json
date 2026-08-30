@@ -1,0 +1,80 @@
+{
+  "question": "can synchronized pairs transfer an ego task head to exo video?",
+  "unit": "coarse action segment",
+  "splits": {
+    "train_segments": 1710,
+    "validation_segments": 511,
+    "test_segments": 875,
+    "test_recordings": 68
+  },
+  "selection": {
+    "bridge_alpha": 10000.0,
+    "bridge_criterion": "minimum paired validation MSE; no action labels",
+    "head_alpha": 10.0,
+    "head_criterion": "maximum ego-only validation mean-per-class accuracy"
+  },
+  "majority_baseline": 0.054857142857142854,
+  "majority_mean_per_class": 0.007042253521126761,
+  "test": {
+    "raw_exo": {
+      "top1": 0.08,
+      "mean_per_class": 0.022541033635513612,
+      "top1_ci95": [
+        0.06264761950920046,
+        0.09828571428571428
+      ],
+      "predicted_classes": 88,
+      "ego_alignment_mse": 0.9884339570999146,
+      "ego_alignment_cosine": 0.34824830293655396,
+      "recall_at_1": 0.28114285714285714,
+      "recall_at_5": 0.7268571428571429,
+      "median_rank": 3.0
+    },
+    "shifted_control": {
+      "top1": 0.030857142857142857,
+      "mean_per_class": 0.013331056032654026,
+      "top1_ci95": [
+        0.018951633650630306,
+        0.04374259568651276
+      ],
+      "predicted_classes": 61,
+      "ego_alignment_mse": 0.42424312233924866,
+      "ego_alignment_cosine": 0.5361955165863037,
+      "recall_at_1": 0.11657142857142858,
+      "recall_at_5": 0.48914285714285716,
+      "median_rank": 6.0
+    },
+    "paired_bridge": {
+      "top1": 0.1417142857142857,
+      "mean_per_class": 0.041983997361853806,
+      "top1_ci95": [
+        0.11606214579448336,
+        0.1692499412069675
+      ],
+      "predicted_classes": 57,
+      "ego_alignment_mse": 0.3972041606903076,
+      "ego_alignment_cosine": 0.5855170488357544,
+      "recall_at_1": 0.24685714285714286,
+      "recall_at_5": 0.6548571428571428,
+      "median_rank": 4.0
+    },
+    "ego_same_view": {
+      "top1": 0.09028571428571429,
+      "mean_per_class": 0.0527247106778672,
+      "top1_ci95": [
+        0.07363420427553444,
+        0.10767631622109233
+      ],
+      "predicted_classes": 122
+    }
+  },
+  "paired_minus_raw_top1": 0.06171428571428571,
+  "paired_minus_raw_top1_ci95": [
+    0.04157290026421843,
+    0.08314350797266516
+  ],
+  "bootstrap_probability_delta_le_zero": 0.0,
+  "bootstrap_samples": 10000,
+  "control": "exo segments cyclically shifted within each training recording by one quarter of its segments",
+  "limitation": "TSM source features were supervised for Assembly101 action recognition; this isolates the value of synchronization, not label-free raw-video learning"
+}
