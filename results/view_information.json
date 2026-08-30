@@ -1,0 +1,31 @@
+{
+  "n_windows": 179,
+  "per_view": {
+    "ego": {
+      "verb_entropy": 3.0704240991442044,
+      "noun_entropy": 3.3210907355743284,
+      "verb_classes_used": 10,
+      "noun_classes_used": 16,
+      "top_verb": "connect wire",
+      "top_verb_share": 0.2011173184357542,
+      "fine_verbs": 68
+    },
+    "exo": {
+      "verb_entropy": 1.9783233111623473,
+      "noun_entropy": 2.4301156183003916,
+      "verb_classes_used": 9,
+      "noun_classes_used": 15,
+      "top_verb": "connect wire",
+      "top_verb_share": 0.5754189944134078,
+      "fine_verbs": 8
+    }
+  },
+  "verb_entropy_gain_ego_over_exo": 1.0921007879818572,
+  "fine_verb_ratio_ego_over_exo": 8.5,
+  "fine_verbs": [
+    "pick up",
+    "insert",
+    "detach / remove",
+    "screw / tighten"
+  ]
+}

@@ -122,14 +122,16 @@ def parse(text: str) -> dict:
             "noun": n if n in NOUNS else None}
 
 
-def frames_for(view: str, w: int) -> list[pathlib.Path]:
-    """Three frames spanning window w — enough to read motion, cheap to send."""
+def frames_for(view: str, w: int, k: int = 5) -> list[pathlib.Path]:
+    """Frames spanning window w. k=5 covers the whole 5s at 1fps; fewer frames
+    made the model guess at motion it could not see."""
     base = int(w * WINDOW)
+    offs = list(range(5)) if k >= 5 else [1, 2, 4][:k]
     out = []
-    for off in (1, 2, 4):
-        p = FRAMES / view / f"{base + off + 1:05d}.jpg"
-        if p.exists():
-            out.append(p)
+    for off in offs:
+        fp = FRAMES / view / f"{base + off + 1:05d}.jpg"
+        if fp.exists():
+            out.append(fp)
     return out
 
 
