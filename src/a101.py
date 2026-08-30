@@ -55,7 +55,13 @@ def sequences_with(views: list[str]) -> list[str]:
 
 
 def split_sequences(split: str) -> set[str]:
-    """split in {train, val, test}; unions assembly + disassembly."""
+    """split in {train, val, test}; unions assembly + disassembly.
+
+    Returns CANONICAL ids, i.e. WITH the assembly_/disassembly_ prefix. That
+    prefix is part of the identity: the same nusar-... recording appears once as
+    an assembly sequence and once as a disassembly sequence, with different
+    labels. Stripping it silently merges two distinct sequences.
+    """
     out = set()
     for kind in ("assembly", "disassembly"):
         p = ANN / "coarse_splits" / f"{split}_coarse_{kind}.txt"
@@ -65,11 +71,6 @@ def split_sequences(split: str) -> set[str]:
             name = line.split("\t")[0].strip()
             if name.endswith(".txt"):
                 name = name[:-4]
-            # label files are prefixed with assembly_/disassembly_, view dirs are not
-            for pre in ("assembly_", "disassembly_"):
-                if name.startswith(pre):
-                    name = name[len(pre):]
-                    break
             if name:
                 out.add(name)
     return out
@@ -82,22 +83,29 @@ class Segment:
     action: int
 
 
-def segments(seq: str) -> list[Segment]:
-    """Coarse action segments for a sequence, from either label-file prefix."""
-    vocab = action_vocab()
+def strip_prefix(seq: str) -> str:
+    """Canonical id -> the recording name used inside the LMDB keys."""
     for pre in ("assembly_", "disassembly_"):
-        p = ANN / "coarse_labels" / f"{pre}{seq}.txt"
-        if p.exists():
-            out = []
-            for line in p.read_text().splitlines():
-                parts = [x for x in line.split("\t") if x.strip()]
-                if len(parts) < 3:
-                    continue
-                a = vocab.get(parts[2].strip())
-                if a is not None:
-                    out.append(Segment(int(parts[0]), int(parts[1]), a))
-            return out
-    return []
+        if seq.startswith(pre):
+            return seq[len(pre):]
+    return seq
+
+
+def segments(seq: str) -> list[Segment]:
+    """Coarse action segments for a CANONICAL (prefixed) sequence id."""
+    vocab = action_vocab()
+    p = ANN / "coarse_labels" / f"{seq}.txt"
+    if not p.exists():
+        return []
+    out = []
+    for line in p.read_text().splitlines():
+        parts = [x for x in line.split("\t") if x.strip()]
+        if len(parts) < 3:
+            continue
+        a = vocab.get(parts[2].strip())
+        if a is not None:
+            out.append(Segment(int(parts[0]), int(parts[1]), a))
+    return out
 
 
 class FeatureStore:
@@ -113,7 +121,9 @@ class FeatureStore:
         self.env = lmdb.open(str(path), readonly=True, lock=False, readahead=False)
 
     def key(self, seq: str, frame: int) -> str:
-        return f"{seq}/{self.view}/{self.view}_{frame:010d}.jpg"
+        # LMDB keys use the unprefixed recording name, not the canonical id
+        rec = strip_prefix(seq)
+        return f"{rec}/{self.view}/{self.view}_{frame:010d}.jpg"
 
     def get(self, seq: str, frame: int) -> np.ndarray | None:
         with self.env.begin() as t:

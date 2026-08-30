@@ -38,7 +38,7 @@ import torch.nn.functional as F
 
 CACHE = Path("data/cache/aligned.npz")
 RESULTS = Path("results/pretrain_ablation.json")
-CONDITIONS = ["ego-only", "exo-only", "ego+exo"]
+CONDITIONS = ["none (raw)", "ego-only", "exo-only", "ego+exo"]
 PROBE_SIZES = [1, 2, 5, 10, 20, 50]
 
 
@@ -53,11 +53,14 @@ def device() -> torch.device:
 class Encoder(nn.Module):
     """Deliberately small. The claim is about the data, not the architecture."""
 
-    def __init__(self, dim_in: int = 2048, dim_out: int = 256):
+    def __init__(self, dim_in: int = 2048, dim_out: int = 1024):
         super().__init__()
+        # Width matters: a first run at dim_out=256 UNDERPERFORMED raw 2048-D
+        # features at every probe size, i.e. the projection destroyed more than
+        # the objective added. "none (raw)" stays in the table to keep us honest.
         self.net = nn.Sequential(
-            nn.Linear(dim_in, 512), nn.ReLU(inplace=True),
-            nn.Linear(512, dim_out),
+            nn.Linear(dim_in, 1024), nn.ReLU(inplace=True),
+            nn.Linear(1024, dim_out),
         )
 
     def forward(self, x):
@@ -111,6 +114,27 @@ def pretrain(cond, data, steps, batch, window, seed, dev):
     return enc, float(loss.item())
 
 
+def segment_index(y, seq):
+    """Group consecutive (seq, label) runs into coarse action segments.
+
+    Coarse actions are ~10 s long; classifying single frames makes the task
+    needlessly noisy and lets class imbalance dominate. Segment-level pooling is
+    the standard setup and drops the majority-class baseline from 14.3% to 5.7%.
+    """
+    ch = np.empty(len(y), bool)
+    ch[0] = True
+    ch[1:] = (y[1:] != y[:-1]) | (seq[1:] != seq[:-1])
+    return np.cumsum(ch) - 1
+
+
+def pool_segments(feats, segid, nseg):
+    out = np.zeros((nseg, feats.shape[1]), np.float64)
+    cnt = np.zeros(nseg, np.int64)
+    np.add.at(out, segid, feats.astype(np.float64))
+    np.add.at(cnt, segid, 1)
+    return (out / np.maximum(cnt, 1)[:, None]).astype(np.float32)
+
+
 @torch.no_grad()
 def embed(enc, x, dev, bs=8192):
     out = []
@@ -119,8 +143,9 @@ def embed(enc, x, dev, bs=8192):
     return np.concatenate(out)
 
 
-def probe(emb_tr, y_tr, seq_tr, emb_va, y_va, n_seqs, seed, dev, n_cls):
-    """Linear head on frozen embeddings, trained on n_seqs sequences."""
+def probe(emb_tr, y_tr, seq_tr, emb_va, y_va, n_seqs, seed, dev, n_cls,
+          steps: int = 600):
+    """Linear head on frozen segment embeddings, trained on n_seqs sequences."""
     rng = np.random.default_rng(seed)
     uniq = np.unique(seq_tr)
     if n_seqs > len(uniq):
@@ -136,7 +161,7 @@ def probe(emb_tr, y_tr, seq_tr, emb_va, y_va, n_seqs, seed, dev, n_cls):
     opt = torch.optim.AdamW(head.parameters(), lr=1e-2, weight_decay=1e-4)
     Xt = torch.from_numpy(X).to(dev)
     Yt = torch.from_numpy(Y).to(dev)
-    for _ in range(300):
+    for _ in range(steps):
         loss = F.cross_entropy(head(Xt), Yt)
         opt.zero_grad(set_to_none=True)
         loss.backward()
@@ -148,7 +173,7 @@ def probe(emb_tr, y_tr, seq_tr, emb_va, y_va, n_seqs, seed, dev, n_cls):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--steps", type=int, default=3000)
+    ap.add_argument("--steps", type=int, default=6000)
     ap.add_argument("--batch", type=int, default=256)
     ap.add_argument("--window", type=int, default=5)  # +-1s at 5fps
     ap.add_argument("--seeds", type=int, default=3)
@@ -161,16 +186,21 @@ def main() -> int:
     ego, exo, y, seq, split = z["ego"], z["exo"], z["y"], z["seq"], z["split"]
     n_cls = int(y.max()) + 1
     dev = device()
-    print(f"device={dev}  frames={len(y)}  classes={n_cls}")
+
+    # segment level: coarse actions are ~10 s, so frames are the wrong unit
+    segid = segment_index(y, seq)
+    nseg = int(segid[-1]) + 1
+    sy = np.zeros(nseg, np.int64); sy[segid] = y
+    ss = np.zeros(nseg, np.int64); ss[segid] = seq
+    sp = np.zeros(nseg, np.int8);  sp[segid] = split
+    str_, sva = sp == 0, sp == 1
 
     tr, va = split == 0, split == 1
-    if va.sum() == 0:  # fall back to a sequence-level holdout
-        uq = np.unique(seq)
-        hold = set(uq[: max(1, len(uq) // 5)].tolist())
-        va = np.isin(seq, list(hold))
-        tr = ~va
-    print(f"train frames={tr.sum()} ({len(np.unique(seq[tr]))} seqs)  "
-          f"val frames={va.sum()} ({len(np.unique(seq[va]))} seqs)\n")
+    maj = float(np.bincount(sy[sva], minlength=n_cls).max() / max(sva.sum(), 1))
+    print(f"device={dev}  frames={len(y)}  segments={nseg}  classes={n_cls}")
+    print(f"train {str_.sum()} segs / {len(np.unique(seq[tr]))} seqs   "
+          f"val {sva.sum()} segs / {len(np.unique(seq[va]))} seqs")
+    print(f"majority-class baseline (val, segment level): {maj:.3f}\n")
 
     pre = {"ego": ego[tr], "exo": exo[tr], "seq": seq[tr]}
     out = {c: {n: [] for n in PROBE_SIZES} for c in CONDITIONS}
@@ -178,42 +208,62 @@ def main() -> int:
     for seed in range(args.seeds):
         for cond in CONDITIONS:
             t0 = time.time()
-            enc, loss = pretrain(cond, pre, args.steps, args.batch, args.window, seed, dev)
-            # EVERY condition is evaluated on ego features only
-            e_tr = embed(enc, ego[tr], dev)
-            e_va = embed(enc, ego[va], dev)
+            if cond == "none (raw)":
+                # control: no pretraining at all, raw 2048-D TSM features
+                loss = float("nan")
+                feats = ego
+            else:
+                enc, loss = pretrain(cond, pre, args.steps, args.batch,
+                                     args.window, seed, dev)
+                # EVERY condition is evaluated on EGO features only
+                feats = embed(enc, ego, dev)
+
+            # Pool over ALL frames with the global segment index, THEN split.
+            # Train/val segments are interleaved, so remapping ids per split
+            # creates gap rows and silently misaligns features from labels.
+            pooled = pool_segments(feats, segid, nseg)
+            ptr, ytr_s, str_s = pooled[str_], sy[str_], ss[str_]
+            pva, yva_s = pooled[sva], sy[sva]
+
             accs = []
             for n in PROBE_SIZES:
-                a = probe(e_tr, y[tr], seq[tr], e_va, y[va].astype(np.int64),
-                          n, seed, dev, n_cls)
+                a = probe(ptr, ytr_s, str_s, pva, yva_s, n, seed, dev, n_cls)
                 if a is not None:
                     out[cond][n].append(a)
                 accs.append(a)
-            shown = " ".join(f"{n}:{'--' if a is None else f'{a:.3f}'}" for n, a in zip(PROBE_SIZES, accs))
-            print(f"  seed{seed} {cond:<9} loss={loss:.3f} {time.time()-t0:5.1f}s  {shown}", flush=True)
+            shown = " ".join(f"{n}:{'--' if a is None else f'{a:.3f}'}"
+                             for n, a in zip(PROBE_SIZES, accs))
+            lt = "  n/a " if np.isnan(loss) else f"{loss:.3f}"
+            print(f"  seed{seed} {cond:<12} loss={lt} {time.time()-t0:5.1f}s  {shown}",
+                  flush=True)
 
-    print("\n" + "=" * 74)
-    print("Top-1 coarse action accuracy, EGO FEATURES ONLY at test time")
-    print("=" * 74)
-    print(f"{'pretraining':<12}" + "".join(f"{f'N={n}':>10}" for n in PROBE_SIZES))
-    print("-" * 74)
+    print("\n" + "=" * 78)
+    print("Top-1 coarse action accuracy — EGO FEATURES ONLY at test time")
+    print("=" * 78)
+    print(f"{'pretraining':<14}" + "".join(f"{f'N={n}':>10}" for n in PROBE_SIZES))
+    print("-" * 78)
     table = {}
     for c in CONDITIONS:
-        row = [float(np.mean(out[c][n])) if out[c][n] else float("nan") for n in PROBE_SIZES]
+        row = [float(np.mean(out[c][n])) if out[c][n] else float("nan")
+               for n in PROBE_SIZES]
         table[c] = row
-        print(f"{c:<12}" + "".join(f"{v:>10.3f}" for v in row))
-    print("\nN = number of labelled sequences the linear head was trained on.")
+        print(f"{c:<14}" + "".join(f"{v:>10.3f}" for v in row))
+    print(f"{'majority':<14}" + "".join(f"{maj:>10.3f}" for _ in PROBE_SIZES))
+    print("\nN = number of labelled sequences the linear head saw.")
 
-    base, best = table["ego-only"], table["ego+exo"]
-    gains = [(b - a) for a, b in zip(base, best) if np.isfinite(a) and np.isfinite(b)]
-    if gains:
-        print(f"\nego+exo over ego-only: mean +{np.mean(gains)*100:.1f} pts, "
-              f"max +{max(gains)*100:.1f} pts")
+    raw, base, best = table["none (raw)"], table["ego-only"], table["ego+exo"]
+    d_pre = [b - a for a, b in zip(raw, base) if np.isfinite(a) and np.isfinite(b)]
+    d_exo = [b - a for a, b in zip(base, best) if np.isfinite(a) and np.isfinite(b)]
+    print(f"\n  ego-only pretraining vs raw features : {np.mean(d_pre)*100:+.1f} pts mean")
+    print(f"  ego+exo vs ego-only pretraining     : {np.mean(d_exo)*100:+.1f} pts mean")
+    if np.mean(d_exo) <= 0:
+        print("\n  NEGATIVE RESULT: cross-view pretraining did not beat single-view.")
+        print("  Report it as such.")
 
     RESULTS.parent.mkdir(exist_ok=True)
     RESULTS.write_text(json.dumps(
-        {"probe_sizes": PROBE_SIZES, "accuracy": table,
-         "steps": args.steps, "seeds": args.seeds}, indent=2))
+        {"probe_sizes": PROBE_SIZES, "accuracy": table, "majority_baseline": maj,
+         "steps": args.steps, "seeds": args.seeds, "level": "segment"}, indent=2))
     print(f"wrote {RESULTS}")
     return 0
 
